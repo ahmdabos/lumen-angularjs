@@ -1,0 +1,17 @@
+.nav {
+  display: flex;
+  .nav-item {
+    .nav-link {
+      display: block;
+      padding: rem(8px) rem(16px);
+      color:#676767;
+      &:hover{
+        color:#000000;
+      }
+      &.active{
+        color:#9a6c74;
+
+      }
+    }
+  }
+}

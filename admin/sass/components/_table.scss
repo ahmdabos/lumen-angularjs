@@ -1,0 +1,30 @@
+.table {
+  width: 100%;
+  thead {
+    background: #f1f1f1;
+    th {
+      text-align: left;
+      .fa-caret-down {
+        &.icon-disabled {
+          color: #ccc;
+        }
+        &.icon-enabled {
+          color: #000;
+        }
+      }
+      .fa-caret-up {
+        &.icon-disabled {
+          color: #ccc;
+        }
+        &.icon-enabled {
+          color: #000;
+        }
+      }
+    }
+  }
+  tbody {
+    tr {
+      background: #fff;
+    }
+  }
+}

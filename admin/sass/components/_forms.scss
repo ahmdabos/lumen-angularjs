@@ -1,0 +1,23 @@
+﻿form {
+  padding: rem(10px) 0;
+  .form-group {
+    margin-bottom: rem(14px);
+    label {
+      display: inline-block;
+      margin-bottom: rem(8px);
+    }
+    .form-control {
+      display: block;
+      width: 100%;
+      padding: rem(14px) rem(7px);
+      font-size: rem(16px);
+      line-height: 1.25;
+      box-sizing: border-box;
+      color: #464a4c;
+      background-color: #fff;
+      border: rem(1px) solid rgba(0, 0, 0, .15);
+
+    }
+
+  }
+}

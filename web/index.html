@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Mohammed Bin Rashid Smart Majlis</title>
+    <meta name="description" content="Description about the MBRMAJLIS, this is related to SEO">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=1">
+    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <link href="assets/css/en/site.css" rel="stylesheet" type="text/css" media="all"/>
+    <script src="app/lib/angular/angular.min.js"></script>
+    <script src="app/lib/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="app/lib/lodash/lodash.js"></script>
+    <script src="app/js/app.js"></script>
+    <script src="app/js/controller.js"></script>
+    <script src="app/js/service.js"></script>
+</head>
+<body class="home" ng-app="app" ng-controller="HomeController">
+<div class="right-news item" ng-class="{'center-news': ($index+1) % 2 == 0}"
+     ng-repeat="article in vm.articles">
+    <a href="" ng-click="vm.navigate(article.NewsId)">
+        <article ng-if="($index+1) % 2 == 0">
+            <img src="../uploads/pressrelease/{{article.NewsImages}}" alt="{{article.NewsTitleEn}}"
+                 title="{{article.NewsTitleEn}}"/>
+            <span class="date">{{article.NewsCreatedAt}}</span>
+            <h3 class="news-titile">{{article.NewsTitleEn}}</h3>
+        </article>
+        <article ng-if="($index+1) % 2 != 0">
+            <span class="date">{{article.NewsCreatedAt}}</span>
+            <h3 class="news-titile">{{article.NewsTitleEn}}</h3>
+            <img src="../uploads/pressrelease/{{article.NewsImages}}" alt="{{article.NewsTitleEn}}"
+                 title="{{article.NewsTitleEn}}"/>
+            <p class="description">{{article.NewsIntroEn | limitTo: 100 }}{{article.NewsIntroEn.length >
+                40 ? '...' : ''}}</p>
+        </article>
+    </a>
+</div>
+</body>
+</html>
+
+
+
+

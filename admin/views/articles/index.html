@@ -1,0 +1,92 @@
+﻿﻿﻿<section class="home">
+    <div class="container">
+        <form>
+            <div class="flex">
+                <div class="form-group flex8">
+                    <input type="text" class="form-control" ng-model="searchKeyword" ng-change="setSearch(searchKeyword)"
+                           placeholder="Type keywords here...">
+                </div>
+                <div class="form-group flex2">
+                    <select class="form-control" ng-model="limit" ng-options="limit as limit for limit in limitOptions"
+                            ng-change="setLimit(limit)">
+                        <option value="" selected>Per Page</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+        <table class="table">
+            <thead>
+            <tr>
+                <th ng-click="setSortBy('id')">
+                    <a href="">#</a>
+                    <i class="fa fa-arrow-down" ng-show="sortBy === 'id'"
+                       ng-class="{'fa-caret-down' : sortReverse, 'fa-caret-up' : !sortReverse}"></i>
+                </th>
+                <th ng-click="setSortBy('title')">
+                    <a href="" ng-class="{sortReverse: sortReverse}">Title</a>
+                    <i class="fa fa-arrow-down" ng-show="sortBy === 'title'"
+                       ng-class="{'fa-arrow-down' : sortReverse, 'fa-arrow-up' : !sortReverse}"></i>
+                </th>
+
+                <th ng-click="setSortBy('publishedAt')">
+                    <a href="" ng-class="{sortReverse: sortReverse}">Published At</a>
+                    <i class="fa fa-arrow-down" ng-show="sortBy === 'publishedAt'"
+                       ng-class="{'fa-arrow-down' : sortReverse, 'fa-arrow-up' : !sortReverse}"></i>
+                </th>
+                <th ng-click="setSortBy('createdAt')">
+                    <a href="" ng-class="{sortReverse: sortReverse}">Created At</a>
+                    <i class="fa fa-arrow-down" ng-show="sortBy === 'createdAt'"
+                       ng-class="{'fa-arrow-down' : sortReverse, 'fa-arrow-up' : !sortReverse}"></i>
+                </th>
+                <th>action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="article in articles | orderBy:sortBy:sortReverse">
+                <th scope="row">{{article.id}}</th>
+                <td>{{article.title}}</td>
+                <td>{{article.publishedAt}}</td>
+                <td>{{article.createdAt}}</td>
+                <td><a href="" title="Edit" ng-click="goToEditArticles(article.id)"><i
+                        class="fa fa-pencil-square-o fa-lg"></i></a>|<a href=""
+                                                                        title="Delete"
+                                                                        confirm-dialog="Are you sure you want to delete it?"
+                                                                        ng-click="deleteArticle(article.id)"><i
+                        class="fa fa-trash-o fa-lg"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td ng-if="articles.length==0">No Result</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <ul ng-if="pager.pages.length" class="pagination">
+            <li class="page-item" ng-class="{disabled:pager.currentPage === 1}">
+                <a href="" class="page-link" ng-click="setPage(1)" title="First"><i class="fa fa-angle-double-left"
+                                                                                    aria-hidden="true"></i></a>
+            </li>
+            <li class="page-item" ng-class="{disabled:pager.currentPage === 1}">
+                <a href="" class="page-link" ng-click="setPage(pager.currentPage - 1)" title="Previous"><i
+                        class="fa fa-angle-left" aria-hidden="true"></i></a>
+            </li>
+            <li class="page-item" ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                <a href="" class="page-link" ng-click="setPage(page)">{{page}}</a>
+            </li>
+            <li class="page-item" ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                <a href="" class="page-link" ng-click="setPage(pager.currentPage + 1)" title="Next"><i
+                        class="fa fa-angle-right" aria-hidden="true"></i></a>
+            </li>
+            <li class="page-item" ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                <a href="" class="page-link" ng-click="setPage(pager.totalPages)" title="Last"><i
+                        class="fa fa-angle-double-right" aria-hidden="true"></i></a>
+            </li>
+        </ul>
+
+
+    </div>
+
+
+</section>
+
+
