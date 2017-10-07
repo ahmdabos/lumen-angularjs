@@ -35,3 +35,4 @@ $app->delete('/courses/{courses}/students/{students}', 'CourseStudentController@
 $app->post('/oauth/access_token', function() use ($app){
     return response()->json($app->make('oauth2-server.authorizer')->issueAccessToken());
 });
+
