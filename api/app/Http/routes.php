@@ -36,3 +36,10 @@ $app->post('/oauth/access_token', function() use ($app){
     return response()->json($app->make('oauth2-server.authorizer')->issueAccessToken());
 });
 
+$app->get('/register',function(){$user = new App\User();
+    $user->name="test user";
+ $user->email="test@test.com";
+ $user->password = \Illuminate\Support\Facades\Hash::make("password");
+ $user->save();
+
+});
