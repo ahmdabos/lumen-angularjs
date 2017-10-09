@@ -6,7 +6,10 @@ angular.module('app')
             LoaderService.show();
             var data = {
                 username: $scope.username,
-                password: $scope.password
+                password: $scope.password,
+                grant_type:'password',
+                client_id:'id1',
+                client_secret:'secret1'
             };
             AuthService.login(URL.baseApi + URL.authenticationsApi, data)
                 .then(function (res) {

@@ -1,10 +1,10 @@
 'use strict';
 angular.module('app')
     .constant('URL', {
-        baseApi: 'http://localhost:8000/api/',
+        baseApi: 'http://localhost:8000/',
         articleApi: 'articles',
         uploadApi: 'uploads',
-        authenticationsApi: 'apiauthentications'
+        authenticationsApi: 'oauth/access_token'
     })
     .constant('Config', {
         limitOptions: [10, 25, 50, 100],

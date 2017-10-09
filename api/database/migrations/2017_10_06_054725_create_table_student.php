@@ -18,7 +18,7 @@ class CreateTableStudent extends Migration
             $table->string('address');
             $table->string('phone');
             $table->string('career');
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
     }
 
