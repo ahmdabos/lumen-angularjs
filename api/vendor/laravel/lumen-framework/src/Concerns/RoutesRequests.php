@@ -6,19 +6,20 @@ use Closure;
 use Exception;
 use Throwable;
 use FastRoute\Dispatcher;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Laravel\Lumen\Routing\Pipeline;
 use Laravel\Lumen\Routing\Closure as RoutingClosure;
-use Illuminate\Http\Exception\HttpResponseException;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Laravel\Lumen\Routing\Controller as LumenController;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 trait RoutesRequests
@@ -52,11 +53,11 @@ trait RoutesRequests
     protected $routeMiddleware = [];
 
     /**
-     * The shared attributes for the current route group.
+     * The route group attribute stack.
      *
-     * @var array|null
+     * @var array
      */
-    protected $groupAttributes;
+    protected $groupStack = [];
 
     /**
      * The current route being dispatched.
@@ -81,17 +82,105 @@ trait RoutesRequests
      */
     public function group(array $attributes, Closure $callback)
     {
-        $parentGroupAttributes = $this->groupAttributes;
-
         if (isset($attributes['middleware']) && is_string($attributes['middleware'])) {
             $attributes['middleware'] = explode('|', $attributes['middleware']);
         }
 
-        $this->groupAttributes = $attributes;
+        $this->updateGroupStack($attributes);
 
         call_user_func($callback, $this);
 
-        $this->groupAttributes = $parentGroupAttributes;
+        array_pop($this->groupStack);
+    }
+
+    /**
+     * Update the group stack with the given attributes.
+     *
+     * @param  array  $attributes
+     * @return void
+     */
+    protected function updateGroupStack(array $attributes)
+    {
+        if (! empty($this->groupStack)) {
+            $attributes = $this->mergeWithLastGroup($attributes);
+        }
+
+        $this->groupStack[] = $attributes;
+    }
+
+    /**
+     * Merge the given group attributes.
+     *
+     * @param  array  $new
+     * @param  array  $old
+     * @return array
+     */
+    public function mergeGroup($new, $old)
+    {
+        $new['namespace'] = static::formatUsesPrefix($new, $old);
+
+        $new['prefix'] = static::formatGroupPrefix($new, $old);
+
+        if (isset($new['domain'])) {
+            unset($old['domain']);
+        }
+
+        if (isset($old['as'])) {
+            $new['as'] = $old['as'].(isset($new['as']) ? '.'.$new['as'] : '');
+        }
+
+        if (isset($old['suffix']) && ! isset($new['suffix'])) {
+            $new['suffix'] = $old['suffix'];
+        }
+
+        return array_merge_recursive(Arr::except($old, ['namespace', 'prefix', 'as', 'suffix']), $new);
+    }
+
+    /**
+     * Merge the given group attributes with the last added group.
+     *
+     * @param  array $new
+     * @return array
+     */
+    protected function mergeWithLastGroup($new)
+    {
+        return $this->mergeGroup($new, end($this->groupStack));
+    }
+
+    /**
+     * Format the uses prefix for the new group attributes.
+     *
+     * @param  array  $new
+     * @param  array  $old
+     * @return string|null
+     */
+    protected static function formatUsesPrefix($new, $old)
+    {
+        if (isset($new['namespace'])) {
+            return isset($old['namespace']) && strpos($new['namespace'], '\\') !== 0
+                ? trim($old['namespace'], '\\').'\\'.trim($new['namespace'], '\\')
+                : trim($new['namespace'], '\\');
+        }
+
+        return isset($old['namespace']) ? $old['namespace'] : null;
+    }
+
+    /**
+     * Format the prefix for the new group attributes.
+     *
+     * @param  array  $new
+     * @param  array  $old
+     * @return string|null
+     */
+    protected static function formatGroupPrefix($new, $old)
+    {
+        $oldPrefix = isset($old['prefix']) ? $old['prefix'] : null;
+
+        if (isset($new['prefix'])) {
+            return trim($oldPrefix, '/').'/'.trim($new['prefix'], '/');
+        }
+
+        return $oldPrefix;
     }
 
     /**
@@ -190,16 +279,22 @@ trait RoutesRequests
     {
         $action = $this->parseAction($action);
 
-        if (isset($this->groupAttributes)) {
-            if (isset($this->groupAttributes['prefix'])) {
-                $uri = trim($this->groupAttributes['prefix'], '/').'/'.trim($uri, '/');
+        $attributes = null;
+
+        if ($this->hasGroupStack()) {
+            $attributes = $this->mergeWithLastGroup([]);
+        }
+
+        if (isset($attributes) && is_array($attributes)) {
+            if (isset($attributes['prefix'])) {
+                $uri = trim($attributes['prefix'], '/').'/'.trim($uri, '/');
             }
 
-            if (isset($this->groupAttributes['suffix'])) {
-                $uri = trim($uri, '/').rtrim($this->groupAttributes['suffix'], '/');
+            if (isset($attributes['suffix'])) {
+                $uri = trim($uri, '/').rtrim($attributes['suffix'], '/');
             }
 
-            $action = $this->mergeGroupAttributes($action);
+            $action = $this->mergeGroupAttributes($action, $attributes);
         }
 
         $uri = '/'.trim($uri, '/');
@@ -239,15 +334,33 @@ trait RoutesRequests
     }
 
     /**
+     * Determine if the router currently has a group stack.
+     *
+     * @return bool
+     */
+    public function hasGroupStack()
+    {
+        return ! empty($this->groupStack);
+    }
+
+    /**
      * Merge the group attributes into the action.
      *
      * @param  array  $action
+     * @param  array  $attributes The group attributes
      * @return array
      */
-    protected function mergeGroupAttributes(array $action)
+    protected function mergeGroupAttributes(array $action, array $attributes)
     {
+        $namespace = isset($attributes['namespace']) ? $attributes['namespace'] : null;
+        $middleware = isset($attributes['middleware']) ? $attributes['middleware'] : null;
+        $as = isset($attributes['as']) ? $attributes['as'] : null;
+
         return $this->mergeNamespaceGroup(
-            $this->mergeMiddlewareGroup($action)
+            $this->mergeMiddlewareGroup(
+                $this->mergeAsGroup($action, $as),
+                $middleware),
+            $namespace
         );
     }
 
@@ -255,12 +368,13 @@ trait RoutesRequests
      * Merge the namespace group into the action.
      *
      * @param  array  $action
+     * @param  string $namespace
      * @return array
      */
-    protected function mergeNamespaceGroup(array $action)
+    protected function mergeNamespaceGroup(array $action, $namespace = null)
     {
-        if (isset($this->groupAttributes['namespace']) && isset($action['uses'])) {
-            $action['uses'] = $this->groupAttributes['namespace'].'\\'.$action['uses'];
+        if (isset($namespace) && isset($action['uses'])) {
+            $action['uses'] = $namespace.'\\'.$action['uses'];
         }
 
         return $action;
@@ -270,15 +384,36 @@ trait RoutesRequests
      * Merge the middleware group into the action.
      *
      * @param  array  $action
+     * @param  array  $middleware
      * @return array
      */
-    protected function mergeMiddlewareGroup($action)
+    protected function mergeMiddlewareGroup(array $action, $middleware = null)
     {
-        if (isset($this->groupAttributes['middleware'])) {
+        if (isset($middleware)) {
             if (isset($action['middleware'])) {
-                $action['middleware'] = array_merge($this->groupAttributes['middleware'], $action['middleware']);
+                $action['middleware'] = array_merge($middleware, $action['middleware']);
             } else {
-                $action['middleware'] = $this->groupAttributes['middleware'];
+                $action['middleware'] = $middleware;
+            }
+        }
+
+        return $action;
+    }
+
+    /**
+     * Merge the as group into the action.
+     *
+     * @param  array $action
+     * @param  string $as
+     * @return array
+     */
+    protected function mergeAsGroup(array $action, $as = null)
+    {
+        if (isset($as) && ! empty($as)) {
+            if (isset($action['as'])) {
+                $action['as'] = $as.'.'.$action['as'];
+            } else {
+                $action['as'] = $as;
             }
         }
 
@@ -318,7 +453,7 @@ trait RoutesRequests
     /**
      * {@inheritdoc}
      */
-    public function handle(SymfonyRequest $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+    public function handle(SymfonyRequest $request)
     {
         $response = $this->dispatch($request);
 
@@ -398,28 +533,27 @@ trait RoutesRequests
                 );
             });
         } catch (Exception $e) {
-            return $this->sendExceptionToHandler($e);
+            return $this->prepareResponse($this->sendExceptionToHandler($e));
         } catch (Throwable $e) {
-            return $this->sendExceptionToHandler($e);
+            return $this->prepareResponse($this->sendExceptionToHandler($e));
         }
     }
 
     /**
      * Parse the incoming request and return the method and path info.
      *
-     * @param  \Illuminate\Http\Request|null  $request
+     * @param  \Symfony\Component\HttpFoundation\Request|null  $request
      * @return array
      */
     protected function parseIncomingRequest($request)
     {
-        if ($request) {
-            $this->instance(Request::class, $this->prepareRequest($request));
-            $this->ranServiceBinders['registerRequestBindings'] = true;
-
-            return [$request->getMethod(), $request->getPathInfo()];
-        } else {
-            return [$this->getMethod(), $this->getPathInfo()];
+        if (! $request) {
+            $request = Request::capture();
         }
+
+        $this->instance(Request::class, $this->prepareRequest($request));
+
+        return [$request->getMethod(), '/'.trim($request->getPathInfo(), '/')];
     }
 
     /**
@@ -458,10 +592,8 @@ trait RoutesRequests
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
                 throw new NotFoundHttpException;
-
             case Dispatcher::METHOD_NOT_ALLOWED:
                 throw new MethodNotAllowedHttpException($routeInfo[1]);
-
             case Dispatcher::FOUND:
                 return $this->handleFoundRoute($routeInfo);
         }
@@ -533,7 +665,13 @@ trait RoutesRequests
      */
     protected function callControllerAction($routeInfo)
     {
-        list($controller, $method) = explode('@', $routeInfo[1]['uses']);
+        $uses = $routeInfo[1]['uses'];
+
+        if (is_string($uses) && ! Str::contains($uses, '@')) {
+            $uses .= '@__invoke';
+        }
+
+        list($controller, $method) = explode('@', $uses);
 
         if (! method_exists($instance = $this->make($controller), $method)) {
             throw new NotFoundHttpException;
@@ -660,32 +798,6 @@ trait RoutesRequests
         }
 
         return $response;
-    }
-
-    /**
-     * Get the current HTTP request method.
-     *
-     * @return string
-     */
-    protected function getMethod()
-    {
-        if (isset($_POST['_method'])) {
-            return strtoupper($_POST['_method']);
-        } else {
-            return $_SERVER['REQUEST_METHOD'];
-        }
-    }
-
-    /**
-     * Get the current HTTP path info.
-     *
-     * @return string
-     */
-    protected function getPathInfo()
-    {
-        $query = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
-
-        return '/'.trim(str_replace('?'.$query, '', $_SERVER['REQUEST_URI']), '/');
     }
 
     /**

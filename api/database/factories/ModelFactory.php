@@ -11,67 +11,30 @@
 |
 */
 
-$factory->define(App\Teacher::class, function ($faker) {
-    return [
-        'name' => $faker->name,
-        'address' => $faker->address,
-        'phone' => $faker->phoneNumber,
-        'profession' => $faker->randomElement($array = array('engineering','math','physics')),
-    ];
-});
-
-$factory->define(App\Student::class, function ($faker) {
-    return [
-        'name' => $faker->name,
-        'address' => $faker->address,
-        'phone' => $faker->phoneNumber,
-        'career' => $faker->randomElement($array = array('engineering','math','physics')),
-    ];
-});
-
-$factory->define(App\Course::class, function ($faker) {
+$factory->define(App\Post::class, function (Faker\Generator $faker) {
     return [
         'title' => $faker->sentence(4),
-        'description' => $faker->paragraph(4),
-        'value' => $faker->numberBetween(1,4),
-        'teacher_id' => mt_rand(1,50)
+        'content' => $faker->paragraph(4),
+        'user_id' => mt_rand(1, 10)
     ];
 });
 
+$factory->define(App\Comment::class, function (Faker\Generator $faker) {
+    return [
+        'content' => $faker->paragraph(1),
+        'post_id' => mt_rand(1, 50),
+        'user_id' => mt_rand(1, 10)
+    ];
+});
 
+$factory->define(App\User::class, function (Faker\Generator $faker) {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    $hasher = app()->make('hash');
+    
+    return [
+        'name' => $faker->name,
+        'email' => $faker->email,
+        'password' => $hasher->make("secret"),
+        'is_admin' => mt_rand(0, 1)
+    ];
+});

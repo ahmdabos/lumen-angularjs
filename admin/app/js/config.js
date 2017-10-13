@@ -1,7 +1,7 @@
 'use strict';
 angular.module('app')
     .constant('URL', {
-        baseApi: 'http://localhost:8000/',
+        baseApi: 'http://localhost/lumen-angularjs/api/public/',
         articleApi: 'articles',
         uploadApi: 'uploads',
         authenticationsApi: 'oauth/access_token'

@@ -27,19 +27,28 @@ return [
     |
     */
 
-
     'grant_types' => [
+        /*The username field is the email in Users table.
+        The password field is secret.
+        The client_id field is the id in oauth_clients table.
+        The client_secret field is the secret in oauth_clients table.
+        The grant_type field is password.*/
         'password' => [
             'class' => '\League\OAuth2\Server\Grant\PasswordGrant',
-            'callback' => '\App\PasswordGrantVerifier@verify',
+            'callback' => '\App\User@verify',
             'access_token_ttl' => 3600
         ],
+        /*The client_id field is the id in oauth_clients table.
+        The client_secret field is the secret in oauth_clients table.
+        The grant_type field is refresh_token.
+        The refresh_token field is refresh_token value.*/
         'refresh_token' => [
             'class' => '\League\OAuth2\Server\Grant\RefreshTokenGrant',
             'access_token_ttl' => 3600,
             'refresh_token_ttl' => 36000
         ]
     ],
+
     /*
     |--------------------------------------------------------------------------
     | Output Token Type

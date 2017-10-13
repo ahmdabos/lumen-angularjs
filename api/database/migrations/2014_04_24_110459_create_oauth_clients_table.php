@@ -31,8 +31,6 @@ class CreateOauthClientsTable extends Migration
             $table->string('id', 40)->primary();
             $table->string('secret', 40);
             $table->string('name');
-            $table->string('email');
-            $table->string('password');
             $table->nullableTimestamps();
 
             $table->unique(['id', 'secret']);

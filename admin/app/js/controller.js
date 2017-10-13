@@ -8,8 +8,8 @@ angular.module('app')
                 username: $scope.username,
                 password: $scope.password,
                 grant_type:'password',
-                client_id:'id1',
-                client_secret:'secret1'
+                client_id:'id0',
+                client_secret:'secret0'
             };
             AuthService.login(URL.baseApi + URL.authenticationsApi, data)
                 .then(function (res) {

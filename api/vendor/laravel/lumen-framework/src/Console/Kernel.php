@@ -8,6 +8,7 @@ use RuntimeException;
 use Laravel\Lumen\Application;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Console\Application as Artisan;
+use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Console\Kernel as KernelContract;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 
@@ -28,6 +29,13 @@ class Kernel implements KernelContract
     protected $artisan;
 
     /**
+     * Indicates if facade aliases are enabled for the console.
+     *
+     * @var bool
+     */
+    protected $aliases = true;
+
+    /**
      * The Artisan commands provided by the application.
      *
      * @var array
@@ -44,7 +52,7 @@ class Kernel implements KernelContract
     {
         $this->app = $app;
 
-        $this->app->prepareForConsoleCommand();
+        $this->app->prepareForConsoleCommand($this->aliases);
 
         $this->defineConsoleSchedule();
     }
@@ -57,7 +65,7 @@ class Kernel implements KernelContract
     protected function defineConsoleSchedule()
     {
         $this->app->instance(
-            'Illuminate\Console\Scheduling\Schedule', $schedule = new Schedule
+            'Illuminate\Console\Scheduling\Schedule', $schedule = new Schedule($this->app[Cache::class])
         );
 
         $this->schedule($schedule);

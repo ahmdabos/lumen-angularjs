@@ -115,13 +115,11 @@ class PasswordGrant extends AbstractGrant
         }
 
         $username = $this->server->getRequest()->request->get('username', null);
-
         if (is_null($username)) {
             throw new Exception\InvalidRequestException('username');
         }
 
         $password = $this->server->getRequest()->request->get('password', null);
-
         if (is_null($password)) {
             throw new Exception\InvalidRequestException('password');
         }
