@@ -15,7 +15,7 @@ angular.module('app')
                 .then(function (res) {
                     LoaderService.hide();
                     ToastService.show('successfully logged in');
-                    $cookies.putObject('currentUser', {username: $scope.username, token: res.token});
+                    $cookies.putObject('currentUser', {access_token: res.access_token, refresh_token: res.refresh_token});
                     $state.go('/');
                     $log.debug(res);
                 }, function (err) {
