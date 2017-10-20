@@ -17,9 +17,9 @@ $app->get('/', function () use ($app) {
 });
 
 // Posts
-$app->get('/posts/{page}/{limit}[/{keyword}]','PostController@index');
-$app->post('/posts','PostController@store');
-$app->get('/posts/{post_id}','PostController@show');
+$app->get('/posts/{page}/{limit}[/{keyword}]', 'PostController@index');
+$app->post('/posts', 'PostController@store');
+$app->get('/posts/{post_id}', 'PostController@show');
 $app->put('/posts/{post_id}', 'PostController@update');
 $app->patch('/posts/{post_id}', 'PostController@update');
 $app->delete('/posts/{post_id}', 'PostController@destroy');
@@ -43,7 +43,10 @@ $app->put('/posts/{post_id}/comments/{comment_id}', 'PostCommentController@updat
 $app->patch('/posts/{post_id}/comments/{comment_id}', 'PostCommentController@update');
 $app->delete('/posts/{post_id}/comments/{comment_id}', 'PostCommentController@destroy');
 
+//Upload files
+$app->post('/uploads/', 'UploadController@uploadFile');
+
 // Request an access token
-$app->post('/oauth/access_token', function() use ($app){
+$app->post('/oauth/access_token', function () use ($app) {
     return response()->json($app->make('oauth2-server.authorizer')->issueAccessToken());
 });

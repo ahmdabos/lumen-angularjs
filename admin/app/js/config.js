@@ -10,7 +10,7 @@ angular.module('app')
     })
     .constant('Config', {
         limitOptions: [10, 25, 50, 100],
-        sortBy: 'createdAt',
+        sortBy: 'publishedAt',
         limit: 25,
         sortReverse: true
     })

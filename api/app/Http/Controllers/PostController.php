@@ -27,13 +27,12 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-
         $this->validateRequest($request);
-
         $post = Post::create([
             'title' => $request->get('title'),
             'content' => $request->get('content'),
             'published_at' => $request->get('publishedAt'),
+            'image' => $request->get('image'),
             'user_id' => $this->getUserId()
         ]);
 
@@ -66,6 +65,7 @@ class PostController extends Controller
         $post->title = $request->get('title');
         $post->content = $request->get('content');
         $post->published_at = $request->get('publishedAt');
+        $post->image = $request->get('image');
         $post->user_id = $this->getUserId();
 
         $post->save();

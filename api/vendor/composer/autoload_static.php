@@ -324,6 +324,7 @@ class ComposerStaticInit0833337f3b85f85ebf6d5bff19f74622
     );
 
     public static $classMap = array (
+        'AddImageToPosts' => __DIR__ . '/../..' . '/database/migrations/2017_10_20_201249_add_image_to_posts.php',
         'AddPublishedatToPosts' => __DIR__ . '/../..' . '/database/migrations/2017_10_20_135715_add_publishedat_to_posts.php',
         'CreateCommentsTable' => __DIR__ . '/../..' . '/database/migrations/2016_03_24_221457_create_comments_table.php',
         'CreateOauthAccessTokenScopesTable' => __DIR__ . '/../..' . '/database/migrations/2014_04_24_111657_create_oauth_access_token_scopes_table.php',

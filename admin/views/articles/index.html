@@ -33,11 +33,6 @@
                     <i class="fa fa-arrow-down" ng-show="sortBy === 'publishedAt'"
                        ng-class="{'fa-arrow-down' : sortReverse, 'fa-arrow-up' : !sortReverse}"></i>
                 </th>
-                <th ng-click="setSortBy('createdAt')">
-                    <a href="" ng-class="{sortReverse: sortReverse}">Created At</a>
-                    <i class="fa fa-arrow-down" ng-show="sortBy === 'createdAt'"
-                       ng-class="{'fa-arrow-down' : sortReverse, 'fa-arrow-up' : !sortReverse}"></i>
-                </th>
                 <th>action</th>
             </tr>
             </thead>
@@ -46,7 +41,6 @@
                 <th scope="row">{{article.id}}</th>
                 <td>{{article.title}}</td>
                 <td>{{article.published_at}}</td>
-                <td>{{article.created_at}}</td>
                 <td><a href="" title="Edit" ng-click="goToEditArticles(article.id)"><i
                         class="fa fa-pencil-square-o fa-lg"></i></a>|<a href=""
                                                                         title="Delete"
