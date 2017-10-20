@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
@@ -6,94 +6,112 @@ use App\Post;
 
 use Illuminate\Http\Request;
 
-class PostController extends Controller{
+class PostController extends Controller
+{
 
-	public function __construct(){
+    public function __construct()
+    {
+        $this->middleware('oauth', ['except' => ['index', 'show']]);
+        $this->middleware('authorize:' . __CLASS__, ['except' => ['index', 'show', 'store']]);
+    }
+    /*public function getArticles($page, $limit, $keyword = '')
+    {
+        $articles['result'] = Article::limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->where('title', 'like', '%' . $keyword . '%')
+            ->get();
+        $articles['length'] = count(Article::where('title', 'like', '%' . $keyword . '%')->get());
+        return response()->json($articles);
+    }*/
+    public function index()
+    {
 
-		$this->middleware('oauth', ['except' => ['index', 'show']]);
-		$this->middleware('authorize:' . __CLASS__, ['except' => ['index', 'show', 'store']]);
-	}
+        $posts = Post::all();
+        return $this->success($posts, 200);
+    }
 
-	public function index(){
+    public function store(Request $request)
+    {
 
-		$posts = Post::all();
-		return $this->success($posts, 200);
-	}
+        $this->validateRequest($request);
 
-	public function store(Request $request){
+        $post = Post::create([
+            'title' => $request->get('title'),
+            'content' => $request->get('content'),
+            'published_at' => $request->get('publishedAt'),
+            'user_id' => $this->getUserId()
+        ]);
 
-		$this->validateRequest($request);
+        return $this->success("The post with id {$post->id} has been created", 201);
+    }
 
-		$post = Post::create([
-					'title' => $request->get('title'),
-					'content'=> $request->get('content'),
-					'user_id' => $this->getUserId()
-				]);
+    public function show($id)
+    {
 
-		return $this->success("The post with with id {$post->id} has been created", 201);
-	}
+        $post = Post::find($id);
 
-	public function show($id){
+        if (!$post) {
+            return $this->error("The post with {$id} doesn't exist", 404);
+        }
 
-		$post = Post::find($id);
+        return $this->success($post, 200);
+    }
 
-		if(!$post){
-			return $this->error("The post with {$id} doesn't exist", 404);
-		}
+    public function update(Request $request, $id)
+    {
 
-		return $this->success($post, 200);
-	}
+        $post = Post::find($id);
 
-	public function update(Request $request, $id){
+        if (!$post) {
+            return $this->error("The post with {$id} doesn't exist", 404);
+        }
 
-		$post = Post::find($id);
+        $this->validateRequest($request);
 
-		if(!$post){
-			return $this->error("The post with {$id} doesn't exist", 404);
-		}
+        $post->title = $request->get('title');
+        $post->content = $request->get('content');
+        $post->published_at = $request->get('publishedAt');
+        $post->user_id = $this->getUserId();
 
-		$this->validateRequest($request);
+        $post->save();
 
-		$post->title 		= $request->get('title');
-		$post->content 		= $request->get('content');
-		$post->user_id 		= $this->getUserId();
+        return $this->success("The post with with id {$post->id} has been updated", 200);
+    }
 
-		$post->save();
+    public function destroy($id)
+    {
 
-		return $this->success("The post with with id {$post->id} has been updated", 200);
-	}
+        $post = Post::find($id);
 
-	public function destroy($id){
+        if (!$post) {
+            return $this->error("The post with {$id} doesn't exist", 404);
+        }
 
-		$post = Post::find($id);
+        // no need to delete the comments for the current post,
+        // since we used on delete cascase on update cascase.
+        // $post->comments()->delete();
+        $post->delete();
 
-		if(!$post){
-			return $this->error("The post with {$id} doesn't exist", 404);
-		}
+        return $this->success("The post with with id {$id} has been deleted along with it's comments", 200);
+    }
 
-		// no need to delete the comments for the current post,
-		// since we used on delete cascase on update cascase.
-		// $post->comments()->delete();
-		$post->delete();
+    public function validateRequest(Request $request)
+    {
+        $rules = [
+            'title' => 'required',
+            'content' => 'required',
+        ];
 
-		return $this->success("The post with with id {$id} has been deleted along with it's comments", 200);
-	}
+        $this->validate($request, $rules);
 
-	public function validateRequest(Request $request){
+    }
 
-		$rules = [
-			'title' => 'required', 
-			'content' => 'required'
-		];
+    public function isAuthorized(Request $request)
+    {
 
-		$this->validate($request, $rules);
-	}
+        $resource = "posts";
+        $post = Post::find($this->getArgs($request)["post_id"]);
 
-	public function isAuthorized(Request $request){
-
-		$resource = "posts";
-		$post     = Post::find($this->getArgs($request)["post_id"]);
-
-		return $this->authorizeUser($request, $resource, $post);
-	}
+        return $this->authorizeUser($request, $resource, $post);
+    }
 }

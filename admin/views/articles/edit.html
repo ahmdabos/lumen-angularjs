@@ -12,7 +12,7 @@
                 <datepicker date-typer="true" date-format="yyyy-MM-dd hh:mm:ss" date-set="true">
                     <input ng-model="data.publishedAt" name="date" type="text" class="form-control"
                            ng-pattern="dateTimePattern"
-                           id="date" required/>
+                           id="date" />
                     <p class="error" ng-if="form.date.$error.required && !form.date.$pristine">This field is
                         required</p>
                     <p class="error" ng-if="form.date.$error.pattern && !form.date.$pristine">Enter valid date</p>

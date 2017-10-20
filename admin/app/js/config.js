@@ -1,10 +1,12 @@
 'use strict';
 angular.module('app')
     .constant('URL', {
+        baseUrl: 'http://localhost/lumen-angularjs/admin/#!/',
         baseApi: 'http://localhost/lumen-angularjs/api/public/',
         articleApi: 'articles',
         uploadApi: 'uploads',
-        authenticationsApi: 'oauth/access_token'
+        authenticationsApi: 'oauth/access_token',
+        posts: 'posts'
     })
     .constant('Config', {
         limitOptions: [10, 25, 50, 100],
@@ -12,7 +14,7 @@ angular.module('app')
         limit: 25,
         sortReverse: true
     })
-    .config(['URL','OAuthProvider', function (URL,OAuthProvider) {
+    .config(['URL', 'OAuthProvider', 'OAuthTokenProvider', function (URL, OAuthProvider, OAuthTokenProvider) {
         OAuthProvider.configure({
             baseUrl: URL.baseApi,
             clientId: 'id1',
@@ -20,8 +22,14 @@ angular.module('app')
             grantPath: URL.authenticationsApi,
             revokePath: URL.authenticationsApi
         });
+        OAuthTokenProvider.configure({
+            name: 'token',
+            options: {
+                secure: false // true if https
+            }
+        });
     }])
-    .run(['$rootScope', '$window', 'OAuth', function ($rootScope, $window, OAuth) {
+    .run(['$rootScope', '$window', 'OAuth', 'URL', function ($rootScope, $window, OAuth, URL) {
         $rootScope.$on('oauth:error', function (event, rejection) {
             // Ignore `invalid_grant` error - should be catched on `LoginController`.
             if ('invalid_grant' === rejection.data.error) {
@@ -34,7 +42,7 @@ angular.module('app')
             }
 
             // Redirect to `/login` with the `error_reason`.
-            return $window.location.href = '/login?error_reason=' + rejection.data.error;
+            return $window.location.href = URL.baseUrl + 'login/index?error_reason=' + rejection.data.error;
         });
     }])
     .value('_', window._);

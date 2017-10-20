@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AddPublishedatToPosts' => $baseDir . '/database/migrations/2017_10_20_135715_add_publishedat_to_posts.php',
     'CreateCommentsTable' => $baseDir . '/database/migrations/2016_03_24_221457_create_comments_table.php',
     'CreateOauthAccessTokenScopesTable' => $baseDir . '/database/migrations/2014_04_24_111657_create_oauth_access_token_scopes_table.php',
     'CreateOauthAccessTokensTable' => $baseDir . '/database/migrations/2014_04_24_111518_create_oauth_access_tokens_table.php',
