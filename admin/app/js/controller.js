@@ -1,28 +1,22 @@
 'use strict';
 angular.module('app')
 //Login Controller
-    .controller('LoginController', ['$scope', '$http', '$log', '$state', '$cookies', 'AuthService', 'URL', 'LoaderService', 'ToastService', function ($scope, $http, $log, $state, $cookies, AuthService, URL, LoaderService, ToastService) {
+    .controller('LoginController', ['$scope', '$http', '$log', '$state', '$cookies', 'AuthService', 'URL', 'LoaderService', 'ToastService','OAuth', function ($scope, $http, $log, $state, $cookies, AuthService, URL, LoaderService, ToastService,OAuth) {
         $scope.submit = function () {
             LoaderService.show();
             var data = {
                 username: $scope.username,
-                password: $scope.password,
-                grant_type:'password',
-                client_id:'id0',
-                client_secret:'secret0'
+                password: $scope.password
             };
-            AuthService.login(URL.baseApi + URL.authenticationsApi, data)
-                .then(function (res) {
-                    LoaderService.hide();
-                    ToastService.show('successfully logged in');
-                    $cookies.putObject('currentUser', {access_token: res.access_token, refresh_token: res.refresh_token});
-                    $state.go('/');
-                    $log.debug(res);
-                }, function (err) {
-                    LoaderService.hide();
-                    ToastService.show('Failed to login');
-                    $log.debug(err);
-                });
+            OAuth.getAccessToken(data,{}).then(function(){
+                LoaderService.hide();
+                ToastService.show('successfully logged in');
+                $state.go('/');
+            },function(){
+                LoaderService.hide();
+                ToastService.show('Failed to login');
+            });
+
         };
     }])
     //Articles Controller

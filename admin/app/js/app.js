@@ -4,4 +4,5 @@ angular.module('app', [
 	'ngAnimate',
 	'720kb.datepicker',
     'angularFileUpload',
+	'angular-oauth2'
 ])
