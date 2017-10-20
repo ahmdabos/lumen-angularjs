@@ -17,7 +17,7 @@ $app->get('/', function () use ($app) {
 });
 
 // Posts
-$app->get('/posts','PostController@index');
+$app->get('/posts/{page}/{limit}[/{keyword}]','PostController@index');
 $app->post('/posts','PostController@store');
 $app->get('/posts/{post_id}','PostController@show');
 $app->put('/posts/{post_id}', 'PostController@update');

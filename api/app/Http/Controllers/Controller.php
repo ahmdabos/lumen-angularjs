@@ -17,7 +17,7 @@ class Controller extends BaseController{
      * @return \Illuminate\Http\JsonResponse
      */
 	public function success($data, $code){
-		return response()->json(['data' => $data], $code);
+		return response()->json($data, $code);
 	}
 
     /**

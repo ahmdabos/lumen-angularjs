@@ -14,19 +14,14 @@ class PostController extends Controller
         $this->middleware('oauth', ['except' => ['index', 'show']]);
         $this->middleware('authorize:' . __CLASS__, ['except' => ['index', 'show', 'store']]);
     }
-    /*public function getArticles($page, $limit, $keyword = '')
+
+    public function index($page, $limit, $keyword = '')
     {
-        $articles['result'] = Article::limit($limit)
+        $posts['result'] = Post::limit($limit)
             ->offset(($page - 1) * $limit)
             ->where('title', 'like', '%' . $keyword . '%')
             ->get();
-        $articles['length'] = count(Article::where('title', 'like', '%' . $keyword . '%')->get());
-        return response()->json($articles);
-    }*/
-    public function index()
-    {
-
-        $posts = Post::all();
+        $posts['length'] = count(Post::where('title', 'like', '%' . $keyword . '%')->get());
         return $this->success($posts, 200);
     }
 
