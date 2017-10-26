@@ -16,13 +16,13 @@ $app->get('/', function () use ($app) {
     return $app->version();
 });
 
-// Posts
-$app->get('/posts/{page}/{limit}[/{keyword}]', 'PostController@index');
-$app->post('/posts', 'PostController@store');
-$app->get('/posts/{post_id}', 'PostController@show');
-$app->put('/posts/{post_id}', 'PostController@update');
-$app->patch('/posts/{post_id}', 'PostController@update');
-$app->delete('/posts/{post_id}', 'PostController@destroy');
+// Articles
+$app->get('/articles/{page}/{limit}[/{keyword}]', 'ArticleController@index');
+$app->post('/articles', 'ArticleController@store');
+$app->get('/articles/{article_id}', 'ArticleController@show');
+$app->put('/articles/{article_id}', 'ArticleController@update');
+$app->patch('/articles/{article_id}', 'ArticleController@update');
+$app->delete('/articles/{article_id}', 'ArticleController@destroy');
 
 // Users
 $app->get('/users/', 'UserController@index');
@@ -36,12 +36,12 @@ $app->delete('/users/{user_id}', 'UserController@destroy');
 $app->get('/comments', 'CommentController@index');
 $app->get('/comments/{comment_id}', 'CommentController@show');
 
-// Comment(s) of a post
-$app->get('/posts/{post_id}/comments', 'PostCommentController@index');
-$app->post('/posts/{post_id}/comments', 'PostCommentController@store');
-$app->put('/posts/{post_id}/comments/{comment_id}', 'PostCommentController@update');
-$app->patch('/posts/{post_id}/comments/{comment_id}', 'PostCommentController@update');
-$app->delete('/posts/{post_id}/comments/{comment_id}', 'PostCommentController@destroy');
+// Comment(s) of a article
+$app->get('/articles/{article_id}/comments', 'ArticleCommentController@index');
+$app->post('/articles/{article_id}/comments', 'ArticleCommentController@store');
+$app->put('/articles/{article_id}/comments/{comment_id}', 'ArticleCommentController@update');
+$app->patch('/articles/{article_id}/comments/{comment_id}', 'ArticleCommentController@update');
+$app->delete('/articles/{article_id}/comments/{comment_id}', 'ArticleCommentController@destroy');
 
 //Upload files
 $app->post('/uploads/', 'UploadController@uploadFile');

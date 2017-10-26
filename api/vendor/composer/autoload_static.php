@@ -324,8 +324,6 @@ class ComposerStaticInit0833337f3b85f85ebf6d5bff19f74622
     );
 
     public static $classMap = array (
-        'AddImageToPosts' => __DIR__ . '/../..' . '/database/migrations/2017_10_20_201249_add_image_to_posts.php',
-        'AddPublishedatToPosts' => __DIR__ . '/../..' . '/database/migrations/2017_10_20_135715_add_publishedat_to_posts.php',
         'CreateCommentsTable' => __DIR__ . '/../..' . '/database/migrations/2016_03_24_221457_create_comments_table.php',
         'CreateOauthAccessTokenScopesTable' => __DIR__ . '/../..' . '/database/migrations/2014_04_24_111657_create_oauth_access_token_scopes_table.php',
         'CreateOauthAccessTokensTable' => __DIR__ . '/../..' . '/database/migrations/2014_04_24_111518_create_oauth_access_tokens_table.php',
@@ -341,7 +339,7 @@ class ComposerStaticInit0833337f3b85f85ebf6d5bff19f74622
         'CreateOauthScopesTable' => __DIR__ . '/../..' . '/database/migrations/2014_04_24_110151_create_oauth_scopes_table.php',
         'CreateOauthSessionScopesTable' => __DIR__ . '/../..' . '/database/migrations/2014_04_24_111109_create_oauth_session_scopes_table.php',
         'CreateOauthSessionsTable' => __DIR__ . '/../..' . '/database/migrations/2014_04_24_111002_create_oauth_sessions_table.php',
-        'CreatePostsTable' => __DIR__ . '/../..' . '/database/migrations/2016_03_24_221425_create_posts_table.php',
+        'CreatePostsTable' => __DIR__ . '/../..',
         'CreateUsersTable' => __DIR__ . '/../..' . '/database/migrations/2016_03_24_182334_create_users_table.php',
         'DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
         'ExampleTest' => __DIR__ . '/../..' . '/tests/ExampleTest.php',

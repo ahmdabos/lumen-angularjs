@@ -21,12 +21,12 @@ class Comment extends Model{
 	protected $hidden   = ['created_at', 'updated_at'];
 
     /**
-     * Define an inverse one-to-many relationship with App\Post.
+     * Define an inverse one-to-many relationship with App\Article.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-	public function post(){
-		return $this->belongsTo('App\Post');
+	public function article(){
+		return $this->belongsTo('App\Article');
 	}
 
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
 use App\User;
-use App\Post;
+use App\Article;
 use App\Comment;
 
 class DatabaseSeeder extends Seeder {
@@ -20,11 +20,11 @@ class DatabaseSeeder extends Seeder {
 		DB::statement('SET FOREIGN_KEY_CHECKS = 0');
 
 		User::truncate();
-		Post::truncate();
+		Article::truncate();
 		Comment::truncate();
 
 		factory(User::class, 10)->create();
-		factory(Post::class, 50)->create();
+		factory(Article::class, 50)->create();
 		factory(Comment::class, 100)->create();
 
 		$this->call('OAuthClientSeeder');
