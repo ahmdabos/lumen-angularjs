@@ -20,7 +20,7 @@ class CreateArticlesTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->nullableTimestamps();
             $table->dateTime('published_at');
-            $table->string('image');
+            $table->string('image')->nullable();
         });
     }
 

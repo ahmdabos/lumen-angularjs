@@ -57,7 +57,7 @@ angular.module('app')
             else {
                 keyword = '/' + keyword;
             }
-            ArticlesService.getArticles(URL.baseApi + URL.posts + '/' + page + '/' + limit + keyword)
+            ArticlesService.getArticles(URL.baseApi + URL.articleApi + '/' + page + '/' + limit + keyword)
                 .then(function (res) {
                     LoaderService.hide();
                     $log.debug(res);
@@ -76,7 +76,7 @@ angular.module('app')
         };
         $scope.getArticles(1, $scope.limit, '');
         $scope.deleteArticle = function (id) {
-            ArticlesService.deleteArticle(URL.baseApi + URL.posts + '/' + id)
+            ArticlesService.deleteArticle(URL.baseApi + URL.articleApi + '/' + id)
                 .then(function (res) {
                     LoaderService.hide();
                     ToastService.show('Deleted successfully');
@@ -134,7 +134,7 @@ angular.module('app')
                     uploader.onCompleteItem = function (fileItem, response, status, headers) {
                         if (response.status == 1) {
                             data.image = response.fileNewName;
-                            ArticlesService.postArticle(URL.baseApi + URL.posts, data)
+                            ArticlesService.postArticle(URL.baseApi + URL.articleApi, data)
                                 .then(function (res) {
                                     LoaderService.hide();
                                     ToastService.show('Added successfully');
@@ -152,7 +152,7 @@ angular.module('app')
                     };
                 }
                 else if ($scope.isAttachments === false) {
-                    ArticlesService.postArticle(URL.baseApi + URL.posts, data)
+                    ArticlesService.postArticle(URL.baseApi + URL.articleApi, data)
                         .then(function (res) {
                             LoaderService.hide();
                             ToastService.show('Added successfully');
@@ -192,7 +192,7 @@ angular.module('app')
                 $scope.isFileTypeError = false;
             }
         };
-        ArticlesService.getArticle(URL.baseApi + URL.posts + '/' + id)
+        ArticlesService.getArticle(URL.baseApi + URL.articleApi + '/' + id)
             .then(function (res) {
                 LoaderService.hide();
                 var article = res.data;
@@ -220,7 +220,7 @@ angular.module('app')
                 uploader.onCompleteItem = function (fileItem, response, status, headers) {
                     if (response.status == 1) {
                         $scope.data.image = response.fileNewName;
-                        ArticlesService.putArticle(URL.baseApi + URL.posts + '/' + id, $scope.data)
+                        ArticlesService.putArticle(URL.baseApi + URL.articleApi + '/' + id, $scope.data)
                             .then(function (res) {
                                 LoaderService.hide();
                                 ToastService.show('Updated successfully');
@@ -237,7 +237,7 @@ angular.module('app')
                 };
             }
             else if ($scope.isAttachments === false) {
-                ArticlesService.putArticle(URL.baseApi + URL.posts + '/' + id, $scope.data)
+                ArticlesService.putArticle(URL.baseApi + URL.articleApi + '/' + id, $scope.data)
                     .then(function (res) {
                         LoaderService.hide();
                         ToastService.show('Updated successfully');

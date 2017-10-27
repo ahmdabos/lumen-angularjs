@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit0833337f3b85f85ebf6d5bff19f74622
+class ComposerStaticInit056adeffb21ba0df3eff6a2532fc4725
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -324,6 +324,7 @@ class ComposerStaticInit0833337f3b85f85ebf6d5bff19f74622
     );
 
     public static $classMap = array (
+        'CreateArticlesTable' => __DIR__ . '/../..' . '/database/migrations/2016_03_24_221425_create_articles_table.php',
         'CreateCommentsTable' => __DIR__ . '/../..' . '/database/migrations/2016_03_24_221457_create_comments_table.php',
         'CreateOauthAccessTokenScopesTable' => __DIR__ . '/../..' . '/database/migrations/2014_04_24_111657_create_oauth_access_token_scopes_table.php',
         'CreateOauthAccessTokensTable' => __DIR__ . '/../..' . '/database/migrations/2014_04_24_111518_create_oauth_access_tokens_table.php',
@@ -339,7 +340,6 @@ class ComposerStaticInit0833337f3b85f85ebf6d5bff19f74622
         'CreateOauthScopesTable' => __DIR__ . '/../..' . '/database/migrations/2014_04_24_110151_create_oauth_scopes_table.php',
         'CreateOauthSessionScopesTable' => __DIR__ . '/../..' . '/database/migrations/2014_04_24_111109_create_oauth_session_scopes_table.php',
         'CreateOauthSessionsTable' => __DIR__ . '/../..' . '/database/migrations/2014_04_24_111002_create_oauth_sessions_table.php',
-        'CreatePostsTable' => __DIR__ . '/../..',
         'CreateUsersTable' => __DIR__ . '/../..' . '/database/migrations/2016_03_24_182334_create_users_table.php',
         'DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
         'ExampleTest' => __DIR__ . '/../..' . '/tests/ExampleTest.php',
@@ -883,10 +883,10 @@ class ComposerStaticInit0833337f3b85f85ebf6d5bff19f74622
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit0833337f3b85f85ebf6d5bff19f74622::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit0833337f3b85f85ebf6d5bff19f74622::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit0833337f3b85f85ebf6d5bff19f74622::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit0833337f3b85f85ebf6d5bff19f74622::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit056adeffb21ba0df3eff6a2532fc4725::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit056adeffb21ba0df3eff6a2532fc4725::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit056adeffb21ba0df3eff6a2532fc4725::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit056adeffb21ba0df3eff6a2532fc4725::$classMap;
 
         }, null, ClassLoader::class);
     }

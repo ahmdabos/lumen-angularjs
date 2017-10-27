@@ -6,7 +6,7 @@ angular.module('app')
         articleApi: 'articles',
         uploadApi: 'uploads',
         authenticationsApi: 'oauth/access_token',
-        posts: 'posts'
+
     })
     .constant('Config', {
         limitOptions: [10, 25, 50, 100],

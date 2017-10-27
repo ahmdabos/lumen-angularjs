@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'CreateArticlesTable' => $baseDir . '/database/migrations/2016_03_24_221425_create_articles_table.php',
     'CreateCommentsTable' => $baseDir . '/database/migrations/2016_03_24_221457_create_comments_table.php',
     'CreateOauthAccessTokenScopesTable' => $baseDir . '/database/migrations/2014_04_24_111657_create_oauth_access_token_scopes_table.php',
     'CreateOauthAccessTokensTable' => $baseDir . '/database/migrations/2014_04_24_111518_create_oauth_access_tokens_table.php',
@@ -21,7 +22,6 @@ return array(
     'CreateOauthScopesTable' => $baseDir . '/database/migrations/2014_04_24_110151_create_oauth_scopes_table.php',
     'CreateOauthSessionScopesTable' => $baseDir . '/database/migrations/2014_04_24_111109_create_oauth_session_scopes_table.php',
     'CreateOauthSessionsTable' => $baseDir . '/database/migrations/2014_04_24_111002_create_oauth_sessions_table.php',
-    'CreatePostsTable' => $baseDir . '/database/migrations/2016_03_24_221425_create_articles_table.php',
     'CreateUsersTable' => $baseDir . '/database/migrations/2016_03_24_182334_create_users_table.php',
     'DatabaseSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
     'ExampleTest' => $baseDir . '/tests/ExampleTest.php',
