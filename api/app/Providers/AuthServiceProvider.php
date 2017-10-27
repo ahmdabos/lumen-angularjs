@@ -39,7 +39,7 @@ class AuthServiceProvider extends ServiceProvider
 
         // Group & Define simillar Abilities
         $this->isOwner([
-            'posts' => ['destroy', 'update'],
+            'articles' => ['destroy', 'update'],
             'comments' => ['destroy', 'update']
         ]);
 
