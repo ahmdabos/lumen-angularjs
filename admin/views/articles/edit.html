@@ -1,60 +1,54 @@
 ﻿<section>
     <div class="container">
-        <form ng-submit="editArticleVm.submit()" name="form">
+        <form data-ng-submit="editArticleVm.submit()" name="form">
             <div class="form-group">
                 <label for="title">Title</label>
-                <input ng-model="editArticleVm.data.title" name="title" type="text" class="form-control" id="title"
-                       placeholder="Enter Title" ng-maxlength="150" maxlength="150" required>
-                <p class="error" ng-if="form.title.$error.required && !form.title.$pristine">This field is required</p>
+                <input data-ng-model="editArticleVm.data.title" name="title" type="text" class="form-control" id="title"
+                       placeholder="Enter Title" data-ng-maxlength="150" maxlength="150" required>
+                <p class="error" data-ng-if="form.title.$error.required && !form.title.$pristine">This field is required</p>
             </div>
             <div class="form-group">
                 <label for="date">Date</label>
                 <datepicker date-typer="true" date-format="yyyy-MM-dd hh:mm:ss" date-set="true">
-                    <input ng-model="editArticleVm.data.publishedAt" name="date" type="text" class="form-control"
-                           ng-pattern="editArticleVm.dateTimePattern"
-                           id="date" />
-                    <p class="error" ng-if="form.date.$error.required && !form.date.$pristine">This field is
-                        required</p>
-                    <p class="error" ng-if="form.date.$error.pattern && !form.date.$pristine">Enter valid date</p>
+                    <input data-ng-model="editArticleVm.data.publishedAt" name="date" type="text" class="form-control" data-ng-pattern="editArticleVm.dateTimePattern" id="date"/>
+                    <p class="error" data-ng-if="form.date.$error.required && !form.date.$pristine">This field isrequired</p>
+                    <p class="error" data-ng-if="form.date.$error.pattern && !form.date.$pristine">Enter valid date</p>
                 </datepicker>
             </div>
             <div class="form-group">
                 <label for="content">Content</label>
-                <textarea ng-model="editArticleVm.data.content" class="form-control" id="content" placeholder="Enter Content"
-                          ng-maxlength="2000" maxlength="2000"
-                          required></textarea>
-                <p class="error" ng-if="form.content.$error.required && !form.content.$pristine">This field is
-                    required</p>
+                <textarea data-ng-model="editArticleVm.data.content" class="form-control" id="content" placeholder="Enter Content" data-ng-maxlength="2000" maxlength="2000" required></textarea>
+                <p class="error" data-ng-if="form.content.$error.required && !form.content.$pristine">This field isrequired</p>
             </div>
             <div class="form-group">
                 <input accept="image/gif, image/jpeg, image/jpg, image/png" type="file" nv-file-select=""
                        uploader="editArticleVm.uploader"
-                       ng-if="editArticleVm.uploader.queue.length == 0 && (data.image == null || data.image == '')"/>
+                       data-ng-if="editArticleVm.uploader.queue.length == 0 && (data.image == null || data.image == '')"/>
 
-                <p class="error" ng-if="editArticleVm.isFileTypeError">Only images allowed</p>
-                <p class="error" ng-if="editArticleVm.isFileSizeError">Max File size 2MB</p>
+                <p class="error" data-ng-if="editArticleVm.isFileTypeError">Only images allowed</p>
+                <p class="error" data-ng-if="editArticleVm.isFileSizeError">Max File size 2MB</p>
                 <div class="flex panel-group">
-                    <div class="panel" ng-repeat="item in editArticleVm.uploader.queue">
+                    <div class="panel" data-ng-repeat="item in editArticleVm.uploader.queue">
                         <div class="panel-header">
-                            <i ng-click="item.remove();editArticleVm.onRemoveFileBeforeUpload()" class="fa fa-trash-o"></i>
+                            <i data-ng-click="item.remove();editArticleVm.onRemoveFileBeforeUpload()" class="fa fa-trash-o"></i>
                             <span><strong>{{ item.file.name | limitTo:10}}</strong> - {{ item.file.size/1024/1024|number:2 }} MB</span>
                         </div>
-                        <div class="panel-body align-center" ng-show="editArticleVm.uploader.isHTML5"
-                             ng-thumb="{ file: item._file, height: 100 }"></div>
-                        <div class="panel-footer" ng-show="editArticleVm.uploader.isHTML5">
+                        <div class="panel-body align-center" data-ng-show="editArticleVm.uploader.isHTML5"
+                             data-ng-thumb="{ file: item._file, height: 100 }"></div>
+                        <div class="panel-footer" data-ng-show="editArticleVm.uploader.isHTML5">
                             <div class="progress" style="margin-bottom: 0;">
                                 <div class="progress-bar" role="progressbar"
-                                     ng-style="{ 'width': item.progress + '%' }"></div>
+                                     data-ng-style="{ 'width': item.progress + '%' }"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="panel" ng-if="editArticleVm.data.image != null && editArticleVm.data.image != '' && editArticleVm.uploader.queue.length == 0">
+                    <div class="panel" data-ng-if="editArticleVm.data.image != null && editArticleVm.data.image != '' && editArticleVm.uploader.queue.length == 0">
                         <div class="panel-header">
-                            <i ng-click="editArticleVm.onRemoveFileBeforeUpload()" class="fa fa-trash-o"></i>
+                            <i data-ng-click="editArticleVm.onRemoveFileBeforeUpload()" class="fa fa-trash-o"></i>
                             <span><strong>{{editArticleVm.data.image | limitTo:10}}</strong></span>
                         </div>
                         <div class="panel-body align-center">
-                            <img ng-src="http://localhost/lumen-angularjs/uploads/{{editArticleVm.data.image}}">
+                            <img data-ng-src="http://localhost/lumen-angularjs/uploads/{{editArticleVm.data.image}}">
                         </div>
                         <div class="panel-footer">
                         </div>
@@ -62,7 +56,7 @@
                 </div>
             </div>
             <button type="submit" class="btn btn-primary"
-                    ng-disabled="!form.$valid || editArticleVm.isFileTypeError || editArticleVm.isFileSizeError">Update
+                    data-ng-disabled="!form.$valid || editArticleVm.isFileTypeError || editArticleVm.isFileSizeError">Update
             </button>
         </form>
     </div>

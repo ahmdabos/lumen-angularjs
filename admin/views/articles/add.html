@@ -1,54 +1,54 @@
 ﻿<section>
     <div class="container">
-        <form ng-submit="addArticleVm.submit(form)" name="form">
+        <form data-ng-submit="addArticleVm.submit(form)" name="form">
             <div class="form-group">
                 <label for="title">Title</label>
-                <input ng-model="addArticleVm.title" name="title" type="text" class="form-control" id="title"
-                       placeholder="Enter Title" ng-maxlength="150" maxlength="150" required>
-                <p class="error" ng-if="form.title.$error.required && !form.title.$pristine">This field is required</p>
+                <input data-ng-model="addArticleVm.title" name="title" type="text" class="form-control" id="title"
+                       placeholder="Enter Title" data-ng-maxlength="150" maxlength="150" required>
+                <p class="error" data-ng-if="form.title.$error.required && !form.title.$pristine">This field is required</p>
             </div>
             <div class="form-group">
                 <label for="date">published At</label>
                 <datepicker date-typer="true" date-format="yyyy-MM-dd hh:mm:ss" date-set="true">
-                    <input ng-model="addArticleVm.date" name="publishedAt" type="text" class="form-control" ng-pattern="dateTimePattern"
+                    <input data-ng-model="addArticleVm.date" name="publishedAt" type="text" class="form-control" data-ng-pattern="dateTimePattern"
                            id="date" required/>
-                    <p class="error" ng-if="form.publishedAt.$error.required && !form.publishedAt.$pristine">This field is
+                    <p class="error" data-ng-if="form.publishedAt.$error.required && !form.publishedAt.$pristine">This field is
                         required</p>
-                    <p class="error" ng-if="form.publishedAt.$error.pattern && !form.publishedAt.$pristine">Enter valid date</p>
+                    <p class="error" data-ng-if="form.publishedAt.$error.pattern && !form.publishedAt.$pristine">Enter valid date</p>
                 </datepicker>
             </div>
             <div class="form-group">
                 <label for="content">Content</label>
-                <textarea ng-model="addArticleVm.content" class="form-control" id="content" placeholder="Enter Content"
-                          ng-maxlength="2000" maxlength="2000"
+                <textarea data-ng-model="addArticleVm.content" class="form-control" id="content" placeholder="Enter Content"
+                          data-ng-maxlength="2000" maxlength="2000"
                           required></textarea>
-                <p class="error" ng-if="form.content.$error.required && !form.content.$pristine">This field is
+                <p class="error" data-ng-if="form.content.$error.required && !form.content.$pristine">This field is
                     required</p>
             </div>
             <div class="form-group">
                 <input accept="image/gif, image/jpeg, image/jpg, image/png" type="file" nv-file-select=""
-                       uploader="addArticleVm.uploader" ng-if="addArticleVm.uploader.queue.length == 0"/>
-                <p class="error" ng-if="addArticleVm.isFileTypeError">Only images allowed</p>
-                <p class="error" ng-if="addArticleVm.isFileSizeError">Max File size 2MB</p>
+                       uploader="addArticleVm.uploader" data-ng-if="addArticleVm.uploader.queue.length == 0"/>
+                <p class="error" data-ng-if="addArticleVm.isFileTypeError">Only images allowed</p>
+                <p class="error" data-ng-if="addArticleVm.isFileSizeError">Max File size 2MB</p>
                 <div class="flex panel-group">
-                    <div ng-repeat="item in addArticleVm.uploader.queue" class="panel">
+                    <div data-ng-repeat="item in addArticleVm.uploader.queue" class="panel">
                         <div class="panel-header">
-                            <i ng-click="item.remove();onRemoveFileBeforeUpload()" class="fa fa-trash-o"></i>
+                            <i data-ng-click="item.remove();onRemoveFileBeforeUpload()" class="fa fa-trash-o"></i>
                             <span><strong>{{ item.file.name | limitTo:10}}</strong> - {{ item.file.size/1024/1024|number:2 }} MB</span>
                         </div>
-                        <div class="panel-body align-center" ng-show="addArticleVm.uploader.isHTML5"
-                             ng-thumb="{ file: item._file, height: 100 }"></div>
-                        <div class="panel-footer" ng-show="addArticleVm.uploader.isHTML5">
+                        <div class="panel-body align-center" data-ng-show="addArticleVm.uploader.isHTML5"
+                             data-ng-thumb="{ file: item._file, height: 100 }"></div>
+                        <div class="panel-footer" data-ng-show="addArticleVm.uploader.isHTML5">
                             <div class="progress" style="margin-bottom: 0;">
                                 <div class="progress-bar" role="progressbar"
-                                     ng-style="{ 'width': item.progress + '%' }"></div>
+                                     data-ng-style="{ 'width': item.progress + '%' }"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary"
-                    ng-disabled="!form.$valid || addArticleVm.isFileTypeError || addArticleVm.isFileSizeError">Add
+                    data-ng-disabled="!form.$valid || addArticleVm.isFileTypeError || addArticleVm.isFileSizeError">Add
             </button>
         </form>
     </div>

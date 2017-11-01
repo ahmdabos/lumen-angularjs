@@ -1,13 +1,12 @@
 'use strict';
 angular.module('app')
 //Main Controller
-    .controller('MainController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'LoaderService', 'ToastService', 'OAuth', function ($scope, $http, $log, $state, $cookies, URL, LoaderService, ToastService, OAuth) {
-        var vm = this;
-        vm.main = 'mainCtrl';
-
-    }])
-    //Login Controller
-    .controller('LoginController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'LoaderService', 'ToastService', 'OAuth', function ($scope, $http, $log, $state, $cookies, URL, LoaderService, ToastService, OAuth) {
+.controller('MainController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'LoaderService', 'ToastService', 'OAuth', function ($scope, $http, $log, $state, $cookies, URL, LoaderService, ToastService, OAuth) {
+    var vm = this;
+    //parent controller
+}])
+//Login Controller
+    .controller('LoginController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'LoaderService', 'ToastService', 'OAuth', 'HelperService', function ($scope, $http, $log, $state, $cookies, URL, LoaderService, ToastService, OAuth, HelperService) {
         var vm = this;
         vm.submit = function () {
             LoaderService.show();
@@ -19,7 +18,7 @@ angular.module('app')
                 LoaderService.hide();
 
                 ToastService.show('successfully logged in');
-                $state.go('/');
+                HelperService.transitionTo('/');
             }, function () {
                 LoaderService.hide();
                 ToastService.show('Failed to login');
@@ -33,7 +32,7 @@ angular.module('app')
 
     }])
     //Articles Controller
-    .controller('ArticlesController', ['$scope', '$http', '$log', '$state', 'URL', 'Config', 'ArticlesService', 'PagerService', 'LoaderService', 'ToastService', function ($scope, $http, $log, $state, URL, Config, ArticlesService, PagerService, LoaderService, ToastService) {
+    .controller('ArticlesController', ['$scope', '$http', '$log', '$state', 'URL', 'Config', 'ArticlesService', 'PagerService', 'LoaderService', 'ToastService', 'HelperService', function ($scope, $http, $log, $state, URL, Config, ArticlesService, PagerService, LoaderService, ToastService, HelperService) {
         var vm = this;
         vm.articles = [];
         vm.pager = {};
@@ -41,7 +40,6 @@ angular.module('app')
         vm.sortBy = Config.sortBy;
         vm.limit = Config.limit;
         vm.sortReverse = Config.sortReverse;
-
         vm.setLimit = function (limit) {
             vm.limit = limit;
             vm.getArticles(1, limit, vm.searchKeyword);
@@ -103,7 +101,7 @@ angular.module('app')
                 });
         };
         vm.goToEditArticles = function (id) {
-            $state.go('articles.edit', {id: id});
+            HelperService.transitionTo('articles.edit', {id: id});
         };
     }])
     //Add Article Controller

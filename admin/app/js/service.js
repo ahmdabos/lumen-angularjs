@@ -199,3 +199,11 @@ angular.module('app')
             }
         };
     }])
+    .factory('HelperService', ['$state', function ($state) {
+        return {
+            transitionTo: function transitionTo(state) {
+                return $state.go(state);
+            }
+
+        }
+    }])
