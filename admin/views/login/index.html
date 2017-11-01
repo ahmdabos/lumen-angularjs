@@ -1,15 +1,15 @@
 ﻿<section>
     <div class="container">
-        <form ng-submit="submit()" name="form">
+        <form ng-submit="loginVm.submit()" name="form">
             <div class="form-group">
                 <label for="username">Username</label>
-                <input ng-model="username" name="username" type="text" class="form-control" id="username"
+                <input ng-model="loginVm.username" name="username" type="text" class="form-control" id="username"
                        placeholder="username" ng-maxlength="100" maxlength="100" required>
                 <p class="error" ng-if="form.username.$error.required && !form.username.$pristine">This field is required</p>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input ng-model="password" name="password" type="password" class="form-control" id="password"
+                <input ng-model="loginVm.password" name="password" type="password" class="form-control" id="password"
                        placeholder="password" ng-maxlength="100" maxlength="100" required>
                 <p class="error" ng-if="form.password.$error.required && !form.password.$pristine">This field is required</p>
             </div>

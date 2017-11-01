@@ -13,7 +13,7 @@
 
 A RESTful API based on Lumen micro-framework with OAuth2. Lumen API OAuth is a simple application, indented for small projects, helps to understand creating RESTful APIs with Lumen and OAuth2, know how to authenticate and authorize, and more.
 
-The RESTful API for Posts and Comments, where Users can view, create, update, and delete. It provides authorization mechanism to authorize against access tokens using OAuth2, ownership, and non-admin Vs admin users.
+The RESTful API for Articles and Comments, where Users can view, create, update, and delete. It provides authorization mechanism to authorize against access tokens using OAuth2, ownership, and non-admin Vs admin users.
 
 :mega: A full tutorial on building a RESTful API with Lumen and OAuth2 can be found on [Medium](https://medium.com/omarelgabrys-blog/building-restful-apis-with-lumen-and-oauth2-8ba279c6a31).
 
@@ -59,7 +59,7 @@ There are some terminologies that will be used on the meaning of the terms used 
 ## Authorization<a name="authorization"></a>
 Authorization comes in two layers. The first layer authorize against the access token, and the second one is for checking against ownership, and non-admin Vs admin users.
 
-By default, user can delete or update a post or a comment **only** if he is the owner. Admins are authorized to view, create, update or delete anything.
+By default, user can delete or update a article or a comment **only** if he is the owner. Admins are authorized to view, create, update or delete anything.
 
 ### Access Tokens<a name="authorization"></a>
 The application implements [Resource owner credentials grant](https://github.com/lucadegasperi/oauth2-server-laravel/blob/master/docs/authorization-server/choosing-grant.md#resource-owner-credentials-grant-section-43), which essentially requires the client to submit 5 fields: ```username```, ```password```, ```client_id```, ```client_secret```, and ```grant_type```.
@@ -69,7 +69,7 @@ The authorization server will then issue access tokens to the client after succe
 In ```app/Http/routes.php```, A route has been defined for requesting an access token.
 
 ### Ownership, & non-Admin Vs Admin Users<a name="authorization"></a>
-Now, after validating the access token, we can extend the authorization layers and check if the current user is owner of the requested resource(i.e. post or comment), or is admin. So, _How does it work?_
+Now, after validating the access token, we can extend the authorization layers and check if the current user is owner of the requested resource(i.e. article or comment), or is admin. So, _How does it work?_
 
 **Assign Middleware to controller**
 ```php
@@ -89,25 +89,25 @@ Please note that the middlewares has to be applied in a certain order. The ```oa
 ```php
 	public function isAuthorized(Request $request){
 
-		$resource = "posts";
-		$post     = Post::find($this->getArgs($request)["post_id"]);
+		$resource = "articles";
+		$article     = Article::find($this->getArgs($request)["article_id"]);
 
-		return $this->authorizeUser($request, $resource, $post);
+		return $this->authorizeUser($request, $resource, $article);
 	}
 ```
 
 In ```app/Providers/AuthServiceProvider.php```, Abilities are defined using ```Gate``` facade.
 
 ## Routing<a name="routing"></a>
-These are some of the routes defined in ```app/routes.php```. You can test the API using [Postman](https://www.getpostman.com/)
+These are some of the routes defined in ```app/routes.php```. You can test the API using [Articleman](https://www.getarticleman.com/)
 
 | HTTP Method	| Path | Action | Fields  |
 | ----- | ----- | ----- | ------------- |
 | GET      | /users | index | 
 | POST     | /oauth/access_token |  | username, password, client_id, client_secret, and grant_type. <br> _The ```username``` field is the ```email``` in ```Users``` table_. <br> _The ```password``` field is **secret**_.<br> _The ```client_id``` & ```client_secret``` fields are **id0** & **secret0**, or **id1** & **secret1**, ...etc respectively_.<br> _The ```grant_type``` field is  **password**_.
-| POST      | /posts | store | access_token, title, content 
-| PUT      | /posts/{post_id} | update | access_token, title, content 
-| DELETE      | /posts/{post_id} | destroy | access_token
+| POST      | /articles | store | access_token, title, content 
+| PUT      | /articles/{article_id} | update | access_token, title, content 
+| DELETE      | /articles/{article_id} | destroy | access_token
 
 
 ## Support <a name="support"></a>

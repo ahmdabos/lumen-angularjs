@@ -190,26 +190,12 @@ angular.module('app')
     // Toast Service
     .factory('ToastService', ['$timeout', function ($timeout) {
         return {
-            show: function showLoader(text) {
+            show: function showToast(text, t) {
                 angular.element(document.querySelector('body')).prepend('<div class="toaster">' + text + '</div>');
+                var time = t ? t : 2000;
                 $timeout(function () {
                     angular.element(document.querySelector('.toaster')).remove();
-                }, 2000)
+                }, time)
             }
         };
     }])
-    // HttpRequestInterceptor Service
-    .factory('HttpRequestInterceptorService', ['$cookies', function ($cookies) {
-        return {
-            request: function (config) {
-                if ($cookies.get('currentUser')) {
-                    var currentUser = JSON.parse($cookies.get('currentUser'));
-                    var token = currentUser.token;
-                    config.headers['Authorization'] = 'bearer ' + token;
-                    config.headers['Accept'] = 'application/json;odata=verbose';
-                }
-
-                return config;
-            }
-        };
-    }]);

@@ -1,55 +1,69 @@
 'use strict';
 angular.module('app')
-//Login Controller
-    .controller('LoginController', ['$scope', '$http', '$log', '$state', '$cookies', 'AuthService', 'URL', 'LoaderService', 'ToastService', 'OAuth', function ($scope, $http, $log, $state, $cookies, AuthService, URL, LoaderService, ToastService, OAuth) {
-        $scope.submit = function () {
+//Main Controller
+    .controller('MainController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'LoaderService', 'ToastService', 'OAuth', function ($scope, $http, $log, $state, $cookies, URL, LoaderService, ToastService, OAuth) {
+        var vm = this;
+        vm.main = 'mainCtrl';
+
+    }])
+    //Login Controller
+    .controller('LoginController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'LoaderService', 'ToastService', 'OAuth', function ($scope, $http, $log, $state, $cookies, URL, LoaderService, ToastService, OAuth) {
+        var vm = this;
+        vm.submit = function () {
             LoaderService.show();
             var data = {
-                username: $scope.username,
-                password: $scope.password
+                username: vm.username,
+                password: vm.password
             };
             OAuth.getAccessToken(data, {}).then(function () {
                 LoaderService.hide();
+
                 ToastService.show('successfully logged in');
                 $state.go('/');
             }, function () {
                 LoaderService.hide();
                 ToastService.show('Failed to login');
             });
-
         };
+    }])
+    //Home Controller
+    .controller('HomeController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'LoaderService', 'ToastService', 'OAuth', function ($scope, $http, $log, $state, $cookies, URL, LoaderService, ToastService, OAuth) {
+        var vm = this;
+        vm.home = 'home';
+
     }])
     //Articles Controller
     .controller('ArticlesController', ['$scope', '$http', '$log', '$state', 'URL', 'Config', 'ArticlesService', 'PagerService', 'LoaderService', 'ToastService', function ($scope, $http, $log, $state, URL, Config, ArticlesService, PagerService, LoaderService, ToastService) {
-        $scope.articles = [];
-        $scope.pager = {};
-        $scope.limitOptions = Config.limitOptions;
-        $scope.sortBy = Config.sortBy;
-        $scope.limit = Config.limit;
-        $scope.sortReverse = Config.sortReverse;
+        var vm = this;
+        vm.articles = [];
+        vm.pager = {};
+        vm.limitOptions = Config.limitOptions;
+        vm.sortBy = Config.sortBy;
+        vm.limit = Config.limit;
+        vm.sortReverse = Config.sortReverse;
 
-        $scope.setLimit = function (limit) {
-            $scope.limit = limit;
-            $scope.getArticles(1, limit, $scope.searchKeyword);
+        vm.setLimit = function (limit) {
+            vm.limit = limit;
+            vm.getArticles(1, limit, vm.searchKeyword);
         };
-        $scope.setSearch = function (searchKeyword) {
-            $scope.searchKeyword = searchKeyword;
-            $scope.getArticles(1, $scope.limit, $scope.searchKeyword);
+        vm.setSearch = function (searchKeyword) {
+            vm.searchKeyword = searchKeyword;
+            vm.getArticles(1, vm.limit, vm.searchKeyword);
         };
-        $scope.setPage = function (page) {
-            $scope.getArticles(page, $scope.limit, $scope.searchKeyword);
+        vm.setPage = function (page) {
+            vm.getArticles(page, vm.limit, vm.searchKeyword);
         };
-        $scope.setSortBy = function (sortBy) {
-            $scope.sortReverse = ($scope.sortBy === sortBy) ? !$scope.sortReverse : true;
-            $scope.sortBy = sortBy;
+        vm.setSortBy = function (sortBy) {
+            vm.sortReverse = (vm.sortBy === sortBy) ? !vm.sortReverse : true;
+            vm.sortBy = sortBy;
         };
-        $scope.getArticles = function (page, limit, keyword) {
+        vm.getArticles = function (page, limit, keyword) {
             LoaderService.show();
             if (!page) {
                 page = 1;
             }
             if (!limit) {
-                limit = $scope.limit;
+                limit = vm.limit;
             }
             if (!keyword) {
                 keyword = '';
@@ -61,21 +75,21 @@ angular.module('app')
                 .then(function (res) {
                     LoaderService.hide();
                     $log.debug(res);
-                    $scope.articles = res.data.result;
-                    $scope.totalItems = res.data.length;
-                    $scope.pager = PagerService.getPager($scope.totalItems, page, limit);
-                    $scope.items = $scope.articles.slice($scope.pager.startIndex, $scope.pager.endIndex + 1);
-                    $log.debug($scope.articles);
+                    vm.articles = res.data.result;
+                    vm.totalItems = res.data.length;
+                    vm.pager = PagerService.getPager(vm.totalItems, page, limit);
+                    vm.items = vm.articles.slice(vm.pager.startIndex, vm.pager.endIndex + 1);
+                    $log.debug(vm.articles);
                 }, function (err) {
                     LoaderService.hide();
                     $log.debug(err);
                 });
-            if (page < 1 || page > $scope.pager.totalPages) {
+            if (page < 1 || page > vm.pager.totalPages) {
                 return;
             }
         };
-        $scope.getArticles(1, $scope.limit, '');
-        $scope.deleteArticle = function (id) {
+        vm.getArticles(1, vm.limit, '');
+        vm.deleteArticle = function (id) {
             ArticlesService.deleteArticle(URL.baseApi + URL.articleApi + '/' + id)
                 .then(function (res) {
                     LoaderService.hide();
@@ -88,48 +102,49 @@ angular.module('app')
                     $log.debug(err);
                 });
         };
-        $scope.goToEditArticles = function (id) {
+        vm.goToEditArticles = function (id) {
             $state.go('articles.edit', {id: id});
         };
     }])
     //Add Article Controller
     .controller('AddArticleController', ['$scope', '$http', '$state', '$log', '$filter', 'URL', 'ArticlesService', 'LoaderService', 'ToastService', 'FileUploader', function ($scope, $http, $state, $log, $filter, URL, ArticlesService, LoaderService, ToastService, FileUploader) {
-        $scope.dateTimePattern = /^([0-2][0-9]{3})-([0-1][0-9])-([0-3][0-9]) ([0-5][0-9]):([0-5][0-9]):([0-5][0-9])(([\-\+]([0-1][0-9])\:00))?/;
-        $scope.date = $filter('date')(new Date(), 'yyyy-MM-dd hh:mm:ss');
-        $scope.isAttachments = false;
-        var uploader = $scope.uploader = new FileUploader({
+        var vm = this;
+        vm.dateTimePattern = /^([0-2][0-9]{3})-([0-1][0-9])-([0-3][0-9]) ([0-5][0-9]):([0-5][0-9]):([0-5][0-9])(([\-\+]([0-1][0-9])\:00))?/;
+        vm.date = $filter('date')(new Date(), 'yyyy-MM-dd hh:mm:ss');
+        vm.isAttachments = false;
+        var uploader = vm.uploader = new FileUploader({
             url: URL.baseApi + URL.uploadApi,
             queueLimit: 1
         });
         uploader.onAfterAddingFile = function (addedFileItems) {
-            $scope.isAttachments = true;
+            vm.isAttachments = true;
             if (addedFileItems.file.size > 2097152) {
-                $scope.isFileSizeError = true;
+                vm.isFileSizeError = true;
                 addedFileItems.remove();
             } else {
-                $scope.isFileSizeError = false;
+                vm.isFileSizeError = false;
             }
             if (addedFileItems.file.type != 'image/jpeg' && addedFileItems.file.type != 'image/jpg' && addedFileItems.file.type != 'image/png') {
-                $scope.isFileTypeError = true;
+                vm.isFileTypeError = true;
                 addedFileItems.remove();
             } else {
-                $scope.isFileTypeError = false;
+                vm.isFileTypeError = false;
             }
         };
-        $scope.onRemoveFileBeforeUpload = function () {
-            $scope.isAttachments = false;
+        vm.onRemoveFileBeforeUpload = function () {
+            vm.isAttachments = false;
         };
 
-        $scope.submit = function () {
-            if ($scope.form.$valid && !$scope.isFileTypeError && !$scope.isFileSizeError) {
+        vm.submit = function (form) {
+            if (form.$valid && !vm.isFileTypeError && !vm.isFileSizeError) {
                 LoaderService.show();
 
                 var data = {
-                    title: $scope.title,
-                    publishedAt: $scope.date,
-                    content: $scope.content
+                    title: vm.title,
+                    publishedAt: vm.date,
+                    content: vm.content
                 };
-                if ($scope.isAttachments === true) {
+                if (vm.isAttachments === true) {
                     uploader.uploadAll();
                     uploader.onCompleteItem = function (fileItem, response, status, headers) {
                         if (response.status == 1) {
@@ -151,7 +166,7 @@ angular.module('app')
                         }
                     };
                 }
-                else if ($scope.isAttachments === false) {
+                else if (vm.isAttachments === false) {
                     ArticlesService.postArticle(URL.baseApi + URL.articleApi, data)
                         .then(function (res) {
                             LoaderService.hide();
@@ -169,34 +184,35 @@ angular.module('app')
     }])
     //Edit Article Controller
     .controller('EditArticleController', ['$scope', '$http', '$state', '$log', '$stateParams', '$filter', 'URL', 'ArticlesService', 'LoaderService', 'ToastService', 'FileUploader', function ($scope, $http, $state, $log, $stateParams, $filter, URL, ArticlesService, LoaderService, ToastService, FileUploader) {
-        $scope.dateTimePattern = /^([0-2][0-9]{3})-([0-1][0-9])-([0-3][0-9]) ([0-5][0-9]):([0-5][0-9]):([0-5][0-9])(([\-\+]([0-1][0-9])\:00))?/;
+        var vm = this;
+        vm.dateTimePattern = /^([0-2][0-9]{3})-([0-1][0-9])-([0-3][0-9]) ([0-5][0-9]):([0-5][0-9]):([0-5][0-9])(([\-\+]([0-1][0-9])\:00))?/;
         LoaderService.show();
         var id = $stateParams.id;
-        $scope.isAttachments = false;
-        var uploader = $scope.uploader = new FileUploader({
+        vm.isAttachments = false;
+        var uploader = vm.uploader = new FileUploader({
             url: URL.baseApi + URL.uploadApi,
             queueLimit: 1
         });
         uploader.onAfterAddingFile = function (addedFileItems) {
-            $scope.isAttachments = true;
+            vm.isAttachments = true;
             if (addedFileItems.file.size > 2097152) {
-                $scope.isFileSizeError = true;
+                vm.isFileSizeError = true;
                 addedFileItems.remove();
             } else {
-                $scope.isFileSizeError = false;
+                vm.isFileSizeError = false;
             }
             if (addedFileItems.file.type != 'image/jpeg' && addedFileItems.file.type != 'image/jpg' && addedFileItems.file.type != 'image/png') {
-                $scope.isFileTypeError = true;
+                vm.isFileTypeError = true;
                 addedFileItems.remove();
             } else {
-                $scope.isFileTypeError = false;
+                vm.isFileTypeError = false;
             }
         };
         ArticlesService.getArticle(URL.baseApi + URL.articleApi + '/' + id)
             .then(function (res) {
                 LoaderService.hide();
                 var article = res.data;
-                $scope.data = {
+                vm.data = {
                     id: id,
                     title: article.title,
                     publishedAt: article.published_at,
@@ -209,18 +225,18 @@ angular.module('app')
                 LoaderService.hide();
                 $log.debug(err);
             });
-        $scope.onRemoveFileBeforeUpload = function () {
-            $scope.isAttachments = false;
-            $scope.data.image = '';
+        vm.onRemoveFileBeforeUpload = function () {
+            vm.isAttachments = false;
+            vm.data.image = '';
         };
-        $scope.submit = function () {
+        vm.submit = function () {
             LoaderService.show();
-            if ($scope.isAttachments === true) {
+            if (vm.isAttachments === true) {
                 uploader.uploadAll();
                 uploader.onCompleteItem = function (fileItem, response, status, headers) {
                     if (response.status == 1) {
-                        $scope.data.image = response.fileNewName;
-                        ArticlesService.putArticle(URL.baseApi + URL.articleApi + '/' + id, $scope.data)
+                        vm.data.image = response.fileNewName;
+                        ArticlesService.putArticle(URL.baseApi + URL.articleApi + '/' + id, vm.data)
                             .then(function (res) {
                                 LoaderService.hide();
                                 ToastService.show('Updated successfully');
@@ -236,8 +252,8 @@ angular.module('app')
                     }
                 };
             }
-            else if ($scope.isAttachments === false) {
-                ArticlesService.putArticle(URL.baseApi + URL.articleApi + '/' + id, $scope.data)
+            else if (vm.isAttachments === false) {
+                ArticlesService.putArticle(URL.baseApi + URL.articleApi + '/' + id, vm.data)
                     .then(function (res) {
                         LoaderService.hide();
                         ToastService.show('Updated successfully');
@@ -253,7 +269,7 @@ angular.module('app')
         }
     }])
     //Logout Controller
-    .controller('LogoutController', ['$scope', '$http', '$log', '$state', '$cookies', 'AuthService', 'URL', 'LoaderService', 'ToastService', 'OAuth', function ($scope, $http, $log, $state, $cookies, AuthService, URL, LoaderService, ToastService, OAuth) {
+    .controller('LogoutController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'LoaderService', 'ToastService', 'OAuth', function ($scope, $http, $log, $state, $cookies, URL, LoaderService, ToastService, OAuth) {
         LoaderService.show();
         OAuth.revokeToken().then(function () {
             LoaderService.hide();

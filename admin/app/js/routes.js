@@ -4,7 +4,8 @@ angular.module('app')
         $stateProvider
             .state('/', {
                 url: '/',
-                templateUrl: 'views/home.html'
+                templateUrl: 'views/home.html',
+                controller: 'HomeController as homeVm'
             })
             .state('login', {
                 url: '/login',
@@ -13,7 +14,7 @@ angular.module('app')
             .state('login.index', {
                 url: '/index',
                 templateUrl: 'views/login/index.html',
-                controller: 'LoginController'
+                controller: 'LoginController as loginVm'
             })
             .state('logout', {
                 url: '/logout',
@@ -26,17 +27,17 @@ angular.module('app')
             .state('articles.index', {
                 url: '/index',
                 templateUrl: 'views/articles/index.html',
-                controller: 'ArticlesController'
+                controller: 'ArticlesController as articleVm'
             })
             .state('articles.add', {
                 url: '/add',
                 templateUrl: 'views/articles/add.html',
-                controller: 'AddArticleController'
+                controller: 'AddArticleController as addArticleVm'
             })
             .state('articles.edit', {
                 url: '/edit/:id',
                 templateUrl: 'views/articles/edit.html',
-                controller: 'EditArticleController'
+                controller: 'EditArticleController as editArticleVm'
             });
         $urlRouterProvider.otherwise('views/home.html');
        /* $locationProvider.html5Mode(true);

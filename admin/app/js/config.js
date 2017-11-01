@@ -19,8 +19,8 @@ angular.module('app')
             baseUrl: URL.baseApi,
             clientId: 'id1',
             clientSecret: 'secret1',
-            grantPath: URL.authenticationsApi,
-            revokePath: URL.authenticationsApi
+            grantPath:URL.authenticationsApi,
+            revokePath:URL.authenticationsApi
         });
         OAuthTokenProvider.configure({
             name: 'token',
