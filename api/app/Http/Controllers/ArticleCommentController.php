@@ -11,7 +11,8 @@ class ArticleCommentController extends Controller{
 
 	public function __construct(){
 		
-
+		$this->middleware('auth', ['except' => ['index', 'show']]);
+		$this->middleware('authorize:' . __CLASS__, ['except' => ['index', 'show', 'store']]);
 	}
 
 	public function index($article_id){

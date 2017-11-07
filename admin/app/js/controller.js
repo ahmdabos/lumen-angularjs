@@ -269,6 +269,7 @@ angular.module('app')
     //Logout Controller
     .controller('LogoutController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'LoaderService', 'ToastService', 'OAuth', function ($scope, $http, $log, $state, $cookies, URL, LoaderService, ToastService, OAuth) {
         LoaderService.show();
+
         OAuth.revokeToken().then(function () {
             LoaderService.hide();
             ToastService.show('You logged out');

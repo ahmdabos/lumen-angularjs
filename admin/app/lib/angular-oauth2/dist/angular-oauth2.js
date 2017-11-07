@@ -177,7 +177,7 @@
                                 "Content-Type": "application/x-www-form-urlencoded"
                             }
                         }, options);
-                        return $http.post("" + this.config.baseUrl + this.config.revokePath, data, options).then(function(response) {
+                        return $http.delete("" + this.config.baseUrl + this.config.revokePath, data, options).then(function(response) {
                             OAuthToken.removeToken();
                             return response;
                         });
