@@ -61,16 +61,16 @@ $app->singleton(
 
 $app->middleware([
     //    App\Http\Middleware\ExampleMiddleware::class
-	\LucaDegasperi\OAuth2Server\Middleware\OAuthExceptionHandlerMiddleware::class
+
 ]);
 
 $app->routeMiddleware([
-	// 'auth' => App\Http\Middleware\Authenticate::class,
-    'oauth' => \LucaDegasperi\OAuth2Server\Middleware\OAuthMiddleware::class,
-    // 'oauth-user'=> \LucaDegasperi\OAuth2Server\Middleware\OAuthUserOwnerMiddleware::class,
+	'auth' => App\Http\Middleware\Authenticate::class,
     'authorize' => App\Http\Middleware\Authorize::class,
 ]);
 
+
+$app->configure('auth');
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers
@@ -82,12 +82,11 @@ $app->routeMiddleware([
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
-// $app->register(App\Providers\EventServiceProvider::class);
-$app->register(\LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider::class);
-$app->register(\LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider::class); 
-
+$app->register(App\Providers\EventServiceProvider::class);
+$app->register(Laravel\Passport\PassportServiceProvider::class);
+$app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

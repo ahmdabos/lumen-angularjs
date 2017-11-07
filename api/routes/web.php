@@ -46,7 +46,3 @@ $app->delete('/articles/{article_id}/comments/{comment_id}', 'ArticleCommentCont
 //Upload files
 $app->post('/uploads/', 'UploadController@uploadFile');
 
-// Request an access token
-$app->post('/oauth/access_token', function () use ($app) {
-    return response()->json($app->make('oauth2-server.authorizer')->issueAccessToken());
-});
