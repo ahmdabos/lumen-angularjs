@@ -791,6 +791,7 @@ form {
         text-align: center; }
     .panel-group .panel canvas {
       height: 100%;
+      max-width: 100%;
       display: inline-block; }
     .panel-group .panel img {
       height: 100%;

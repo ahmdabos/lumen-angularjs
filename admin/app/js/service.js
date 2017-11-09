@@ -179,7 +179,7 @@ angular.module('app')
             },
             showToast: function showToast(text, t) {
                 angular.element(document.querySelector('body')).prepend('<div class="toaster">' + text + '</div>');
-                var time = t ? t : 2000;
+                var time = t ? t : 3000;
                 $timeout(function () {
                     angular.element(document.querySelector('.toaster')).remove();
                 }, time)
