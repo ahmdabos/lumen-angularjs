@@ -1,38 +1,49 @@
 'use strict';
 angular.module('app')
 //Main Controller
-.controller('MainController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'LoaderService', 'ToastService', 'OAuth', function ($scope, $http, $log, $state, $cookies, URL, LoaderService, ToastService, OAuth) {
-    var vm = this;
-    //parent controller
-}])
-//Login Controller
-    .controller('LoginController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'LoaderService', 'ToastService', 'OAuth', 'HelperService', function ($scope, $http, $log, $state, $cookies, URL, LoaderService, ToastService, OAuth, HelperService) {
+    .controller('MainController', ['$scope', '$rootScope', '$log', 'OAuth', 'HelperService', function ($scope, $rootScope, $log, OAuth, HelperService) {
+        var vm = this;
+        $scope.isUserAuthenticated = function () {
+            if (OAuth.isAuthenticated()) {
+                $rootScope.userAuthenticated = true;
+            }
+            else {
+                $rootScope.userAuthenticated = false;
+                HelperService.transitionTo('login.index');
+            }
+        };
+        $scope.isUserAuthenticated();
+    }])
+    //Login Controller
+    .controller('LoginController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'HelperService', 'OAuth', function ($scope, $http, $log, $state, $cookies, URL, HelperService, OAuth) {
         var vm = this;
         vm.submit = function () {
-            LoaderService.show();
+            HelperService.showLoader();
             var data = {
                 username: vm.username,
                 password: vm.password
             };
             OAuth.getAccessToken(data, {}).then(function () {
-                LoaderService.hide();
-
-                ToastService.show('successfully logged in');
+                HelperService.hideLoader();
+                $scope.isUserAuthenticated();
+                HelperService.showToast('successfully logged in');
                 HelperService.transitionTo('/');
             }, function () {
-                LoaderService.hide();
-                ToastService.show('Failed to login');
+                HelperService.hideLoader();
+                HelperService.showToast('Failed to login');
             });
         };
     }])
     //Home Controller
-    .controller('HomeController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'LoaderService', 'ToastService', 'OAuth', function ($scope, $http, $log, $state, $cookies, URL, LoaderService, ToastService, OAuth) {
+    .controller('HomeController', ['$scope', function ($scope) {
+        $scope.isUserAuthenticated();
         var vm = this;
         vm.home = 'home';
-
     }])
     //Articles Controller
-    .controller('ArticlesController', ['$scope', '$http', '$log', '$state', 'URL', 'Config', 'ArticlesService', 'PagerService', 'LoaderService', 'ToastService', 'HelperService', function ($scope, $http, $log, $state, URL, Config, ArticlesService, PagerService, LoaderService, ToastService, HelperService) {
+    .controller('ArticlesController', ['$scope', '$http', '$log', '$state', 'URL', 'Config', 'ArticlesService', 'PagerService', 'HelperService','Name', function ($scope, $http, $log, $state, URL, Config, ArticlesService, PagerService, HelperService,Name) {
+        $log.debug(Name);
+        $scope.isUserAuthenticated();
         var vm = this;
         vm.articles = [];
         vm.pager = {};
@@ -56,7 +67,7 @@ angular.module('app')
             vm.sortBy = sortBy;
         };
         vm.getArticles = function (page, limit, keyword) {
-            LoaderService.show();
+            HelperService.showLoader();
             if (!page) {
                 page = 1;
             }
@@ -71,7 +82,7 @@ angular.module('app')
             }
             ArticlesService.getArticles(URL.baseApi + URL.articleApi + '/' + page + '/' + limit + keyword)
                 .then(function (res) {
-                    LoaderService.hide();
+                    HelperService.hideLoader();
                     $log.debug(res);
                     vm.articles = res.data.result;
                     vm.totalItems = res.data.length;
@@ -79,7 +90,7 @@ angular.module('app')
                     vm.items = vm.articles.slice(vm.pager.startIndex, vm.pager.endIndex + 1);
                     $log.debug(vm.articles);
                 }, function (err) {
-                    LoaderService.hide();
+                    HelperService.hideLoader();
                     $log.debug(err);
                 });
             if (page < 1 || page > vm.pager.totalPages) {
@@ -90,13 +101,13 @@ angular.module('app')
         vm.deleteArticle = function (id) {
             ArticlesService.deleteArticle(URL.baseApi + URL.articleApi + '/' + id)
                 .then(function (res) {
-                    LoaderService.hide();
-                    ToastService.show('Deleted successfully');
+                    HelperService.hideLoader();
+                    HelperService.showToast('Deleted successfully');
                     $log.debug(res);
                     $state.reload();
                 }, function (err) {
-                    LoaderService.hide();
-                    ToastService.show('Something Went Wrong');
+                    HelperService.hideLoader();
+                    HelperService.showToast('Something Went Wrong');
                     $log.debug(err);
                 });
         };
@@ -105,7 +116,7 @@ angular.module('app')
         };
     }])
     //Add Article Controller
-    .controller('AddArticleController', ['$scope', '$http', '$state', '$log', '$filter', 'URL', 'ArticlesService', 'LoaderService', 'ToastService', 'FileUploader', function ($scope, $http, $state, $log, $filter, URL, ArticlesService, LoaderService, ToastService, FileUploader) {
+    .controller('AddArticleController', ['$scope', '$http', '$state', '$log', '$filter', 'URL', 'ArticlesService', 'HelperService', 'FileUploader', function ($scope, $http, $state, $log, $filter, URL, ArticlesService, HelperService, FileUploader) {
         var vm = this;
         vm.dateTimePattern = /^([0-2][0-9]{3})-([0-1][0-9])-([0-3][0-9]) ([0-5][0-9]):([0-5][0-9]):([0-5][0-9])(([\-\+]([0-1][0-9])\:00))?/;
         vm.date = $filter('date')(new Date(), 'yyyy-MM-dd hh:mm:ss');
@@ -135,7 +146,7 @@ angular.module('app')
 
         vm.submit = function (form) {
             if (form.$valid && !vm.isFileTypeError && !vm.isFileSizeError) {
-                LoaderService.show();
+                HelperService.showLoader();
 
                 var data = {
                     title: vm.title,
@@ -149,31 +160,31 @@ angular.module('app')
                             data.image = response.fileNewName;
                             ArticlesService.postArticle(URL.baseApi + URL.articleApi, data)
                                 .then(function (res) {
-                                    LoaderService.hide();
-                                    ToastService.show('Added successfully');
+                                    HelperService.hideLoader();
+                                    HelperService.showToast('Added successfully');
                                     $log.debug(res);
                                     $state.go('articles.index');
                                 }, function (err) {
-                                    LoaderService.hide();
-                                    ToastService.show('Something Went Wrong');
+                                    HelperService.hideLoader();
+                                    HelperService.showToast('Something Went Wrong');
                                     $log.debug(err);
                                 });
                         } else {
-                            LoaderService.hide();
-                            ToastService.show('could not upload attachment');
+                            HelperService.hideLoader();
+                            HelperService.showToast('could not upload attachment');
                         }
                     };
                 }
                 else if (vm.isAttachments === false) {
                     ArticlesService.postArticle(URL.baseApi + URL.articleApi, data)
                         .then(function (res) {
-                            LoaderService.hide();
-                            ToastService.show('Added successfully');
+                            HelperService.hideLoader();
+                            HelperService.showToast('Added successfully');
                             $log.debug(res);
                             $state.go('articles.index');
                         }, function (err) {
-                            LoaderService.hide();
-                            ToastService.show('Something Went Wrong');
+                            HelperService.hideLoader();
+                            HelperService.showToast('Something Went Wrong');
                             $log.debug(err);
                         });
                 }
@@ -181,10 +192,10 @@ angular.module('app')
         };
     }])
     //Edit Article Controller
-    .controller('EditArticleController', ['$scope', '$http', '$state', '$log', '$stateParams', '$filter', 'URL', 'ArticlesService', 'LoaderService', 'ToastService', 'FileUploader', function ($scope, $http, $state, $log, $stateParams, $filter, URL, ArticlesService, LoaderService, ToastService, FileUploader) {
+    .controller('EditArticleController', ['$scope', '$http', '$state', '$log', '$stateParams', '$filter', 'URL', 'ArticlesService', 'HelperService', 'FileUploader', function ($scope, $http, $state, $log, $stateParams, $filter, URL, ArticlesService, HelperService, FileUploader) {
+        HelperService.showLoader();
         var vm = this;
         vm.dateTimePattern = /^([0-2][0-9]{3})-([0-1][0-9])-([0-3][0-9]) ([0-5][0-9]):([0-5][0-9]):([0-5][0-9])(([\-\+]([0-1][0-9])\:00))?/;
-        LoaderService.show();
         var id = $stateParams.id;
         vm.isAttachments = false;
         var uploader = vm.uploader = new FileUploader({
@@ -208,7 +219,7 @@ angular.module('app')
         };
         ArticlesService.getArticle(URL.baseApi + URL.articleApi + '/' + id)
             .then(function (res) {
-                LoaderService.hide();
+                HelperService.hideLoader();
                 var article = res.data;
                 vm.data = {
                     id: id,
@@ -220,7 +231,7 @@ angular.module('app')
 
                 $log.debug('get article for edit', article);
             }, function (err) {
-                LoaderService.hide();
+                HelperService.hideLoader();
                 $log.debug(err);
             });
         vm.onRemoveFileBeforeUpload = function () {
@@ -228,7 +239,7 @@ angular.module('app')
             vm.data.image = '';
         };
         vm.submit = function () {
-            LoaderService.show();
+            HelperService.showLoader();
             if (vm.isAttachments === true) {
                 uploader.uploadAll();
                 uploader.onCompleteItem = function (fileItem, response, status, headers) {
@@ -236,29 +247,29 @@ angular.module('app')
                         vm.data.image = response.fileNewName;
                         ArticlesService.putArticle(URL.baseApi + URL.articleApi + '/' + id, vm.data)
                             .then(function (res) {
-                                LoaderService.hide();
-                                ToastService.show('Updated successfully');
+                                HelperService.hideLoader();
+                                HelperService.showToast('Updated successfully');
                                 $log.debug(res);
                             }, function (err) {
-                                LoaderService.hide();
-                                ToastService.show('Something Went Wrong');
+                                HelperService.hideLoader();
+                                HelperService.showToast('Something Went Wrong');
                                 $log.debug(err);
                             });
                     } else {
-                        LoaderService.hide();
-                        ToastService.show('could not upload attachment');
+                        HelperService.hideLoader();
+                        HelperService.showToast('could not upload attachment');
                     }
                 };
             }
             else if (vm.isAttachments === false) {
                 ArticlesService.putArticle(URL.baseApi + URL.articleApi + '/' + id, vm.data)
                     .then(function (res) {
-                        LoaderService.hide();
-                        ToastService.show('Updated successfully');
+                        HelperService.hideLoader();
+                        HelperService.showToast('Updated successfully');
                         $log.debug(res);
                     }, function (err) {
-                        LoaderService.hide();
-                        ToastService.show('Something Went Wrong');
+                        HelperService.hideLoader();
+                        HelperService.showToast('Something Went Wrong');
                         $log.debug(err);
                     });
             }
@@ -267,16 +278,11 @@ angular.module('app')
         }
     }])
     //Logout Controller
-    .controller('LogoutController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'LoaderService', 'ToastService', 'OAuth', function ($scope, $http, $log, $state, $cookies, URL, LoaderService, ToastService, OAuth) {
-        LoaderService.show();
+    .controller('LogoutController', ['$scope', '$http', '$log', '$state', '$cookies', 'URL', 'HelperService', function ($scope, $http, $log, $state, $cookies, URL, HelperService) {
+        $cookies.remove('token');
+        $scope.isUserAuthenticated();
+        HelperService.transitionTo('login.index');
+        HelperService.showToast('Logged out successfully');
 
-        OAuth.revokeToken().then(function () {
-            LoaderService.hide();
-            ToastService.show('You logged out');
-            $state.go('login.index');
-        }, function () {
-            LoaderService.hide();
-            ToastService.show('Failed to logout');
-        });
 
     }]);

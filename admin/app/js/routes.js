@@ -1,6 +1,9 @@
 'use strict';
 angular.module('app')
-    .config(['$urlRouterProvider', '$stateProvider','$locationProvider', function ($urlRouterProvider, $stateProvider,$locationProvider) {
+    .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', function ($urlRouterProvider, $stateProvider, $locationProvider) {
+        function CheckForAuthenticatedUser(OAuth, $state) {
+           return OAuth.isAuthenticated();
+        }
         $stateProvider
             .state('/', {
                 url: '/',
@@ -22,12 +25,16 @@ angular.module('app')
             })
             .state('articles', {
                 url: '/articles',
-                template: '<ui-view/>'
+                template: '<ui-view/>',
+                resolve:{
+                    Name:CheckForAuthenticatedUser
+                }
             })
             .state('articles.index', {
                 url: '/index',
                 templateUrl: 'views/articles/index.html',
-                controller: 'ArticlesController as articleVm'
+                controller: 'ArticlesController as articleVm',
+
             })
             .state('articles.add', {
                 url: '/add',
@@ -39,8 +46,9 @@ angular.module('app')
                 templateUrl: 'views/articles/edit.html',
                 controller: 'EditArticleController as editArticleVm'
             });
+
         $urlRouterProvider.otherwise('views/home.html');
-       /* $locationProvider.html5Mode(true);
-        $locationProvider.hashPrefix = '!';*/
+        /* $locationProvider.html5Mode(true);
+         $locationProvider.hashPrefix = '!';*/
     }]);
 

@@ -5,9 +5,7 @@ angular.module('app')
         baseApi: 'http://localhost/lumen-angularjs/api/public/',
         articleApi: 'articles',
         uploadApi: 'uploads',
-        authenticationsApi: 'oauth/token',
-        revokeAccess:'oauth/tokens',
-
+        loginApi: 'oauth/token'
     })
     .constant('Config', {
         limitOptions: [10, 25, 50, 100],
@@ -20,8 +18,7 @@ angular.module('app')
             baseUrl: URL.baseApi,
             clientId: '2',
             clientSecret: 'seVBvcbsiXokBbSR25J3K9h3CD16qti8sDx82AaF',
-            grantPath:URL.authenticationsApi,
-            revokePath:URL.revokeAccess+'/083cf3c3ea553b6c8b23897a563c8192004f7a21094c6d2cb2dc06eb9649c018dab9980159e0c2dd'
+            grantPath:URL.loginApi
         });
         OAuthTokenProvider.configure({
             name: 'token',
@@ -29,6 +26,7 @@ angular.module('app')
                 secure: false // true if https
             }
         });
+
     }])
     .run(['$rootScope', '$window', 'OAuth', 'URL', function ($rootScope, $window, OAuth, URL) {
         $rootScope.$on('oauth:error', function (event, rejection) {

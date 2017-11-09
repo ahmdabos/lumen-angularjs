@@ -94,14 +94,6 @@ angular.module('app')
             }
         };
     }])
-    // Authentications Service
-    .factory('AuthService', ['DataService', function (DataService) {
-        return {
-            login: function login(url, data) {
-                return DataService.post(url, data);
-            }
-        };
-    }])
     // Article Service
     .factory('ArticlesService', ['DataService', function (DataService) {
         return {
@@ -176,34 +168,24 @@ angular.module('app')
             }
         };
     })
-    // Loader Service
-    .factory('LoaderService', function () {
+    // Helper Service
+    .factory('HelperService', ['$state','$timeout', function ($state,$timeout) {
         return {
-            show: function showLoader() {
+            showLoader: function showLoader() {
                 angular.element(document.querySelector('body')).addClass('loader');
             },
-            hide: function hideLoader() {
+            hideLoader: function hideLoader() {
                 angular.element(document.querySelector('body')).removeClass('loader');
-            }
-        };
-    })
-    // Toast Service
-    .factory('ToastService', ['$timeout', function ($timeout) {
-        return {
-            show: function showToast(text, t) {
+            },
+            showToast: function showToast(text, t) {
                 angular.element(document.querySelector('body')).prepend('<div class="toaster">' + text + '</div>');
                 var time = t ? t : 2000;
                 $timeout(function () {
                     angular.element(document.querySelector('.toaster')).remove();
                 }, time)
-            }
-        };
-    }])
-    .factory('HelperService', ['$state', function ($state) {
-        return {
+            },
             transitionTo: function transitionTo(state) {
                 return $state.go(state);
             }
-
         }
-    }])
+    }]);

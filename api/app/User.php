@@ -40,6 +40,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @return int|boolean
      * @see    https://github.com/lucadegasperi/oauth2-server-laravel/blob/master/docs/authorization-server/password.md
      */
+
     public function verify($email, $password){
 
         $user = User::where('email', $email)->first();
