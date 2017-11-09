@@ -18,7 +18,7 @@ angular.module('app')
             baseUrl: URL.baseApi,
             clientId: '2',
             clientSecret: 'seVBvcbsiXokBbSR25J3K9h3CD16qti8sDx82AaF',
-            grantPath:URL.loginApi
+            grantPath: URL.loginApi
         });
         OAuthTokenProvider.configure({
             name: 'token',
@@ -28,7 +28,7 @@ angular.module('app')
         });
 
     }])
-    .run(['$rootScope', '$window', 'OAuth', 'URL', function ($rootScope, $window, OAuth, URL) {
+    .run(['$rootScope', '$state', '$window', 'OAuth', 'URL', function ($rootScope, $state, $window, OAuth, URL) {
         $rootScope.$on('oauth:error', function (event, rejection) {
             // Ignore `invalid_grant` error - should be catched on `LoginController`.
             if ('invalid_grant' === rejection.data.error) {
@@ -42,6 +42,10 @@ angular.module('app')
 
             // Redirect to `/login` with the `error_reason`.
             return $window.location.href = URL.baseUrl + 'login/index?error_reason=' + rejection.data.error;
+        });
+        $rootScope.$on('$stateChangeError', function () {
+            // Redirect user to our login page
+            $state.go('login.index');
         });
     }])
     .value('_', window._);

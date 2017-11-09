@@ -474,7 +474,7 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
    * <pre>resolve: {
    *     myResolve1:
    *       function($http, $stateParams) {
-   *         return $http.get("/restfull/foos/"+stateParams.fooID);
+   *         return $http.get("/api/foos/"+stateParams.fooID);
    *       }
    *     }</pre>
    *

@@ -184,8 +184,8 @@ angular.module('app')
                     angular.element(document.querySelector('.toaster')).remove();
                 }, time)
             },
-            transitionTo: function transitionTo(state) {
-                return $state.go(state);
+            transitionTo: function transitionTo(state,options) {
+                return $state.go(state,options);
             }
         }
     }]);

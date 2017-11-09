@@ -1,14 +1,23 @@
 'use strict';
 angular.module('app')
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', function ($urlRouterProvider, $stateProvider, $locationProvider) {
-        function CheckForAuthenticatedUser(OAuth, $state) {
-           return OAuth.isAuthenticated();
-        }
+        var authenticated = ['$q', 'OAuth', function ($q, OAuth) {
+            var deferred = $q.defer();
+            if (OAuth.isAuthenticated()) {
+                deferred.resolve();
+            } else {
+                deferred.reject();
+            }
+            return deferred.promise;
+        }];
         $stateProvider
             .state('/', {
                 url: '/',
                 templateUrl: 'views/home.html',
-                controller: 'HomeController as homeVm'
+                controller: 'HomeController as homeVm',
+                resolve: {
+                    authenticated: authenticated
+                }
             })
             .state('login', {
                 url: '/login',
@@ -26,14 +35,14 @@ angular.module('app')
             .state('articles', {
                 url: '/articles',
                 template: '<ui-view/>',
-                resolve:{
-                    Name:CheckForAuthenticatedUser
+                resolve: {
+                    authenticated: authenticated
                 }
             })
             .state('articles.index', {
                 url: '/index',
                 templateUrl: 'views/articles/index.html',
-                controller: 'ArticlesController as articleVm',
+                controller: 'ArticlesController as articleVm'
 
             })
             .state('articles.add', {

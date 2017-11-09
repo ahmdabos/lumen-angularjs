@@ -41,8 +41,7 @@ angular.module('app')
         vm.home = 'home';
     }])
     //Articles Controller
-    .controller('ArticlesController', ['$scope', '$http', '$log', '$state', 'URL', 'Config', 'ArticlesService', 'PagerService', 'HelperService','Name', function ($scope, $http, $log, $state, URL, Config, ArticlesService, PagerService, HelperService,Name) {
-        $log.debug(Name);
+    .controller('ArticlesController', ['$scope', '$http', '$log', '$state', 'URL', 'Config', 'ArticlesService', 'PagerService', 'HelperService', function ($scope, $http, $log, $state, URL, Config, ArticlesService, PagerService, HelperService) {
         $scope.isUserAuthenticated();
         var vm = this;
         vm.articles = [];
